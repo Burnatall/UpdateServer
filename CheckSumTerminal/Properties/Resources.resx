@@ -123,9 +123,6 @@
   <data name="ClientFolderName" xml:space="preserve">
     <value>MainClient</value>
   </data>
-  <data name="ConnectionString" xml:space="preserve">
-    <value>Host=localhost;Port=5433;Database=updateserver;User Id=postgres;Password=CnfF4wYr</value>
-  </data>
   <data name="ConnectionStringTest" xml:space="preserve">
     <value>Host=localhost;Port=5433;Database=updateserver;User Id=postgres;Password=1234</value>
   </data>

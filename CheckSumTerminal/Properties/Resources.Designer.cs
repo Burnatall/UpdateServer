@@ -79,15 +79,6 @@ namespace CheckSumTerminal.Properties {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Host=localhost;Port=5433;Database=updateserver;User Id=postgres;Password=CnfF4wYr.
-        /// </summary>
-        internal static string ConnectionString {
-            get {
-                return ResourceManager.GetString("ConnectionString", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Ищет локализованную строку, похожую на Host=localhost;Port=5433;Database=updateserver;User Id=postgres;Password=1234.
         /// </summary>
         internal static string ConnectionStringTest {
