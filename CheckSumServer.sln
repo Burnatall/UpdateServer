@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33801.468
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckSumServer", "CheckSum\CheckSumServer.csproj", "{8CF517A8-FD98-4319-BE05-C2A0E4951896}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CheckSumTerminal", "CheckSumTerminal\CheckSumTerminal.csproj", "{BA9AE3BF-8EE2-4C13-A942-41E7971CBE24}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8CF517A8-FD98-4319-BE05-C2A0E4951896}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CF517A8-FD98-4319-BE05-C2A0E4951896}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CF517A8-FD98-4319-BE05-C2A0E4951896}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CF517A8-FD98-4319-BE05-C2A0E4951896}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA9AE3BF-8EE2-4C13-A942-41E7971CBE24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA9AE3BF-8EE2-4C13-A942-41E7971CBE24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA9AE3BF-8EE2-4C13-A942-41E7971CBE24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA9AE3BF-8EE2-4C13-A942-41E7971CBE24}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8A3FE819-43AD-4861-87C0-ECF0495A47EE}
+	EndGlobalSection
+EndGlobal

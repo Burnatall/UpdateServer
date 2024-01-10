@@ -1,0 +1,46 @@
+Warning:
+Remote IP: ::1 Connected 20.12.2023 13:16:48
+Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.Http1Connection`1[Microsoft.AspNetCore.Hosting.HostingApplication+Context]
+
+Warning:
+Remote IP: ::1 Connected 20.12.2023 13:17:18
+Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpRequestStream
+
+Warning:
+Remote IP: ::1 Connected 20.12.2023 13:18:23
+
+
+Warning:
+Remote IP: ::1 Connected 20.12.2023 13:19:25
+Microsoft.AspNetCore.Http.QueryCollection
+
+Warning:
+Remote IP: ::1 Connected 20.12.2023 13:20:56
+Microsoft.AspNetCore.Mvc.ControllerContext
+
+Warning:
+Remote IP: ::1 Connected 20.12.2023 13:21:47CheckSumServer.Controllers.CheckSumController
+
+Warning:
+Remote IP: ::1 Connected 20.12.2023 13:22:40
+CheckSumServer.Controllers.CheckSumController
+
+Warning:
+Remote IP: ::1 Connected 20.12.2023 13:24:41
+Action: Получение списка несовпавших элементов
+
+Warning:
+Remote IP: ::1 Connected 22.12.2023 11:12:19
+Action: Получение списка версий и дат их создания
+Answer: [ 5,51:[5,51, 22.12.2023 11:12:19] ]
+
+Warning:
+Remote IP: ::1 Connected 22.12.2023 11:15:07
+Action: Получение списка версий и дат их создания
+Answer: { 5,51:[5,51, 22.12.2023 11:12:19],5,52:[5,52, 22.12.2023 11:14:21],5,53:[5,53, 22.12.2023 11:14:44] }
+
+Warning:
+Remote IP: ::1 Connected 22.12.2023 15:01:44
+Action: Получение списка несовпавших элементов
+Answer: { 2,3,4 }
+

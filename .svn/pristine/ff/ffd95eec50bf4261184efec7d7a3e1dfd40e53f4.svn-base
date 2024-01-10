@@ -1,0 +1,87 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using CheckSumTerminal.IModels;
+using CheckSumTerminal.IView;
+using CheckSumTerminal.Presenter;
+
+namespace CheckSumTerminal.View
+{
+    /// <summary>
+    /// Логика взаимодействия для VersionSelectWindow.xaml
+    /// </summary>
+    public partial class VersionSelectWindow : Window, IVersionSelectWindow
+    {
+        public event EventHandler backToRevision;
+        public event EventHandler showChanges;
+        public event EventHandler ok;
+        public event EventHandler<RoutedEventArgs> load;
+
+        public DataGrid VersionDataG { get; set; }
+        public Window Window { get; set; }
+        public DataGrid DataGrid { get; set; }
+
+        public VersionSelectWindow(IMainModel model)
+        {
+            InitializeComponent();
+            Initalisers();
+            VersionSelectPresenter vp = new VersionSelectPresenter(this, model);
+        }
+
+        private void Initalisers()
+        {
+            VersionDataG = VersionDataGrid;
+        }
+
+        public void CreateDataGrid()
+        {
+            Window = new Window()
+            {
+                ResizeMode = ResizeMode.NoResize,
+                SizeToContent = SizeToContent.Width,
+                WindowStyle = WindowStyle.ToolWindow
+            };
+            DataGrid = new DataGrid()
+            {
+            };
+            Window.Content = DataGrid;
+        }
+
+        private void BackToRevisionButton_Click(object sender, RoutedEventArgs e)
+        {
+            var handler = backToRevision;
+            if (handler != null) handler(this, e);
+        }
+
+        private void ShowChangesButton_Click(object sender, RoutedEventArgs e)
+        {
+            var handler = showChanges;
+            if (handler != null) handler(this, e);
+        }
+
+        private void OkButton_Click(object sender, RoutedEventArgs e)
+        {
+            var handler = ok;
+            if (handler != null) handler(this, e);
+        }
+
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            var handler = load;
+            if (handler != null) handler(this, e);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+    }
+}

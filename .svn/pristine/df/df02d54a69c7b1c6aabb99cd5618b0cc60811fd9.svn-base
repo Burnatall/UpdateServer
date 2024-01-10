@@ -1,0 +1,112 @@
+﻿using CheckSumTerminal.IModels;
+using CheckSumTerminal.IView;
+using CheckSumTerminal.Models;
+using CheckSumTerminal.View;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
+namespace CheckSumTerminal.Presenter
+{
+    internal class VersionSelectPresenter
+    {
+        private IVersionSelectWindow _view;
+
+        private IMainModel _model;
+
+        public VersionSelectPresenter(IVersionSelectWindow view, IMainModel model)
+        {
+            _view = view;
+            _model = model;
+            _view.load += _view_load;
+            _view.showChanges += _view_showChanges;
+            _view.backToRevision += _view_backToRevision;
+        }
+
+        private void _view_backToRevision(object sender, EventArgs e)
+        {
+            if (_view.VersionDataG.SelectedItem == null)
+            {
+                MessageBox.Show("Версия не выбрана", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            else if(((VersionModelPretty)_view.VersionDataG.SelectedItem).Версия == _model.getLastFullVersion())
+            {
+                MessageBox.Show("Нельзя вернуться к текущей версии", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            string str = ((VersionModelPretty)_view.VersionDataG.SelectedItem).Версия;
+            string pathToVersion = Environment.CurrentDirectory + @"\" + Properties.Resources.VersionFolderName;
+            string pathToMainClient = Environment.CurrentDirectory + @"\" + Properties.Resources.ClientFolderName;
+            string versionCurrent = _model.getLastFullVersion();
+
+            //Получаем список файлов из таблицы версии
+            var list = _model.getListFilesFromTable(pathToVersion + @"\" + str+@"\"+ str +".csv");
+            if (list == null)
+            {
+                MessageBox.Show(_model.ErrorInfo, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+
+            MessageBoxResult b = MessageBox.Show("Текущая версия будет заменена на выбранную, продолжить?", "Предупреждение", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (b == MessageBoxResult.Yes)
+            {
+
+                //Сохраняем текущую версию
+                _model.createZipAndTableByPath(pathToVersion + @"\" + versionCurrent, pathToMainClient, _model.getLastFullVersion());
+
+                //Перемещаем описание обновления в основную папку
+                _model.createChangesFile(Environment.CurrentDirectory + @"\" + Properties.Resources.ChangesDocument, File.ReadAllText( pathToVersion + @"\" + str + @"\" + Properties.Resources.ChangesDocument));
+
+                //Распаковываем выбранную версию в таблицу эталона
+                _model.unzipToCurrentClient(pathToVersion + @"\" + str + @"\" + str + ".zip");
+
+                //Меняем таблицу в базе на выбранную версию
+                Dictionary<string, int> updateableFiles = new Dictionary<string, int>();
+                foreach (var g in list)
+                {
+                    if(!updateableFiles.ContainsKey(g.name))
+                        updateableFiles.Add(g.name, g.version);
+                    else
+                        updateableFiles[g.name] = g.version;
+                }
+                _model.convertFilesToTableInBase(pathToMainClient, updateableFiles);
+
+                //Делаем id страой версии максимальным, что будет обозначать что именно на этой версии мы сейчас находимся
+                _model.increaseIdOfVersion(str);
+
+
+                //Выводим получившийся резульат
+                _view.CreateDataGrid();
+                _view.DataGrid.ItemsSource = list;
+                _view.Window.Title = "Версия обновлена до " + str + " Полученная таблица:";
+                _view.Window.Visibility = Visibility.Visible;
+                _view.Window.Show();
+                _view_load(sender,e);
+            }
+        }
+
+        private void _view_showChanges(object sender, EventArgs e)
+        {
+            IShowChangesWindow sw = new ShowChangesWindow(_model);
+            sw.Show();
+        }
+
+        private void _view_load(object sender, EventArgs e)
+        {
+            //string[] allfiles = Directory.GetDirectories(Environment.CurrentDirectory+@"\"+Properties.Resources.VersionFolderName);
+            //List<string> versions = new List<string>();
+            //for(int i = 0; i < allfiles.Length; i++)
+            //{
+            //    versions.Add(Path.GetFileName(allfiles[i]));
+            //}
+            _view.VersionDataG.ItemsSource = _model.getVersionModels();
+        }
+    }
+}

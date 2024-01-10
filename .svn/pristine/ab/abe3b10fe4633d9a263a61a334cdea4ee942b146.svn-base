@@ -1,0 +1,3 @@
+is_global = true
+build_property.RootNamespace = CheckSumServer
+build_property.ProjectDir = C:\Work\updateserv ACTUAL\CheckSum\

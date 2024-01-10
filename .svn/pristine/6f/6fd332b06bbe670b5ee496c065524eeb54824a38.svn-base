@@ -1,0 +1,17 @@
+﻿<Window x:Class="CheckSumTerminal.View.ProgressWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CheckSumTerminal.View"
+        mc:Ignorable="d"
+        Title="Загрузка" Height="200" Width="600" FontSize="20" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" Icon="/View/Иконка.bmp">
+    <Window.Background>
+        <ImageBrush ImageSource="/View/splashscreen_GIS.png" Stretch="UniformToFill"/>
+    </Window.Background>
+    <Grid>
+        <ProgressBar x:Name="MainProgressBar" Value="0" Maximum="100" Margin="10,141,10,10" IsIndeterminate="True"/>
+        <TextBlock x:Name="NameTextBlock" HorizontalAlignment="Center" Margin="0,49,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="404" Height="43" TextAlignment="Center"/>
+
+    </Grid>
+</Window>

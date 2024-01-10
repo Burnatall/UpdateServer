@@ -1,0 +1,44 @@
+﻿using CheckSumServer.Functional;
+using CheckSumTerminal.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.IO;
+
+namespace CheckSumServer.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CheckSumController : ControllerBase
+    {
+        private readonly IConfiguration _configuration;
+
+        public CheckSumController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        /// <summary>
+        /// Возвращает список id несовпавших элементов, сравнение по version,id,name и порядку элементов
+        /// </summary>
+        /// <param name="version">Версия клиента</param>
+        /// <param name="sum">Полученная от клиента сумма пакетов</param>
+        /// <returns></returns>
+        [HttpPost]
+        public List<long> GetSum()
+        {
+            var cc = ControllerContext.HttpContext;
+            StreamReader s = new StreamReader(cc.Request.Body);
+            //dynamic json = JObject.Parse(s.ReadToEndAsync().Result);
+            //var ans = new JsonResult(s.ReadToEndAsync().Result);
+            List<FileTableModel> files = JsonConvert.DeserializeObject<List<FileTableModel>>(s.ReadToEndAsync().Result);
+            //var ans = new JsonResult(files);
+
+            comparison c = new comparison();
+            return c.compare(files, _configuration); 
+        }
+    }
+}

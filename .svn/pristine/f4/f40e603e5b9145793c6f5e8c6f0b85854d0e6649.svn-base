@@ -1,0 +1,42 @@
+﻿using CheckSumTerminal.IModels;
+using CheckSumTerminal.IView;
+using CheckSumTerminal.Models;
+using CheckSumTerminal.Presenter;
+using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+
+namespace CheckSumTerminal.View
+{
+    /// <summary>
+    /// Логика взаимодействия для ProgressWindow.xaml
+    /// </summary>
+    public partial class ProgressWindow : Window, IProgressWindow
+    {
+        public ProgressBar ProgressBar { get; set; }
+        public TextBlock TextBlockName { get; set; }
+        public TextBlock TextBlockCount { get; set; }
+
+        public event EventHandler Load;
+
+        public ProgressWindow()
+        {
+            InitializeComponent();
+            Bindings();
+        }
+
+        private void Bindings()
+        {
+            NameTextBlock.Text = "Идет загрузка";
+        }
+    }
+}

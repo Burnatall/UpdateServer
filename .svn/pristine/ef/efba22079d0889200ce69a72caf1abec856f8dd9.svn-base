@@ -1,0 +1,474 @@
+﻿using CheckSumTerminal.Context;
+using CheckSumTerminal.IModels;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Text;
+using System.Windows.Controls;
+
+namespace CheckSumTerminal.Models
+{
+    public class MainModel : IMainModel
+    {
+
+        public int iterator { get; set; }
+        public int count { get; set; }
+        public string whatHapend { get; set; }
+
+
+
+        private ApplicationContext _applicationContext;
+
+        public List<FileTableModel> updatedList { get; set; }
+
+        public string ErrorInfo { get; set; }
+
+        public MainModel()
+        {
+            _applicationContext = new ApplicationContext();
+            _applicationContext.Database.EnsureCreated();
+            addNewVersionToBase(Properties.Resources.StartMainVersion, Properties.Resources.StartSubVersion);
+        }
+
+        public void addNewVersionToBase(string main, string sub)
+        {
+            if (!_applicationContext.versions.Where(x => (x.main_version + x.sub_version) == main + sub).Any())
+            {
+                _applicationContext.versions.Add(new VersionModel()
+                {
+                    sub_version = sub,
+                    main_version = main,
+                    date_time = DateTime.Now
+                });
+                _applicationContext.SaveChanges();
+            }
+            else if (!_applicationContext.versions.Any())
+            {
+                _applicationContext.versions.Add(new VersionModel()
+                {
+                    sub_version = sub,
+                    main_version = main,
+                    date_time = DateTime.Now
+                });
+                _applicationContext.SaveChanges();
+            }
+        }
+
+        public List<FileTableModel> convertFilesToTableInBase(string DirectoryNameMain)
+        {
+            List<FileTableModel> filesList = new List<FileTableModel>();
+            var files = Directory.GetFiles(Path.GetFullPath(DirectoryNameMain));
+            int i = 1;
+            foreach (var c in files)
+            {
+                FileTableModel ftm = new FileTableModel();
+                ftm.id = i;
+                ftm.name = Path.GetFileName(c);
+                ftm.version = 1;
+                ftm.date_time = DateTime.Now.ToLongTimeString();
+                filesList.Add(ftm);
+                i++;
+            }
+            try
+            {
+                _applicationContext.files.RemoveRange(_applicationContext.files);
+                _applicationContext.SaveChanges();
+                _applicationContext.files.AddRange(filesList);
+                _applicationContext.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                ErrorInfo = ex.Message;
+                return null;
+            }
+            catch (InvalidOperationException ex)
+            {
+                ErrorInfo = ex.Message;
+                return null;
+            }
+            return filesList;
+
+        }
+
+        public List<FileTableModel> convertFilesToTableInBase(string DirectoryNameMain,Dictionary<string,int> updateableFiles)
+        {
+            List<FileTableModel> filesList = new List<FileTableModel>();
+            var files = Directory.GetFiles(Path.GetFullPath(DirectoryNameMain));
+            int i = 1;
+            whatHapend = "Записываем данные из эталона в таблицу";
+            iterator = 0;
+            count = files.Length;
+            foreach (var c in files)
+            {
+                FileTableModel ftm = new FileTableModel();
+                ftm.id = i;
+                ftm.name = Path.GetFileName(c);
+                if(!updateableFiles.ContainsKey(ftm.name))
+                    ftm.version = 1;
+                else
+                    ftm.version = updateableFiles[ftm.name];
+                ftm.date_time = DateTime.Now.ToLongTimeString();
+                filesList.Add(ftm);
+                i++;
+                iterator++;
+            }
+            try
+            {
+                _applicationContext.files.RemoveRange(_applicationContext.files);
+                _applicationContext.SaveChanges();
+                _applicationContext.files.AddRange(filesList);
+                _applicationContext.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                ErrorInfo = ex.Message;
+                return null;
+            }
+            catch (InvalidOperationException ex)
+            {
+                ErrorInfo = ex.Message;
+                return null;
+            }
+            return filesList;
+        }
+
+        /// <summary>
+        /// Метод создания нового обновления
+        /// </summary>
+        /// <param name="DirectoryNameMain">Название папки с эталоном</param>
+        /// <param name="DirectoryNameVersion">Название папки с версиями</param>
+        /// <param name="NumberOfVersion">Номер новой версии</param>
+        /// <param name="filesOfNewVesion">Список путей к файлам для обновления</param>
+        /// <param name="listsOfUpdateableFiles">Словарь названий и их версий для обновления в таблице</param>
+        /// <returns>Полученный список файлов после обновления</returns>
+        public List<FileTableModel> addVersion(string DirectoryNameMain, string DirectoryNameVersion, string NumberOfVersion,
+            List<string> filesOfNewVesion,Dictionary<string,int> listsOfUpdateableFiles, Dictionary<string,int> deletedList, BackgroundWorker backgroundWorker)
+        {
+            List<FileTableModel> filesList = new List<FileTableModel>();
+            if (_applicationContext.files == null||_applicationContext.files.Count()==0)
+            {
+                createChangesFile(Environment.CurrentDirectory + @"\" + Properties.Resources.ChangesDocument, "Первая версия");
+                return convertFilesToTableInBase(DirectoryNameMain);
+            }
+            else
+            {
+                if (filesOfNewVesion.Any()|| deletedList.Any())
+                {
+                    iterator = 1;
+                    count = filesOfNewVesion.Count + deletedList.Count + 10;
+                    backgroundWorker.ReportProgress(iterator / count);
+
+                    //Получаем номер старой версии
+                    string NumberOfVersionOld = getLastFullVersion();
+
+                    whatHapend = "Архивирование последней версии";
+                    iterator++;
+                    backgroundWorker.ReportProgress(iterator / count);
+
+                    //Создаем папку для сохранения старой версии
+                    var s = Environment.CurrentDirectory + @"\"+ DirectoryNameVersion;
+
+                    iterator++;
+                    backgroundWorker.ReportProgress(iterator / count);
+
+                    //Создаем папку для сохранения старой версии, а в ней архив, таблицу и описание обновления в директории версий
+                    createZipAndTableByPath(s + @"\" + NumberOfVersionOld, Environment.CurrentDirectory + @"\" + DirectoryNameMain, NumberOfVersionOld);
+
+                    whatHapend = "Копирование файлов в папку с эталоном";
+                    iterator++;
+                    backgroundWorker.ReportProgress(iterator / count);
+
+                    //Копируем файлы в папку с эталоном
+                    //count = filesOfNewVesion.Count;
+                    var t = Environment.CurrentDirectory + @"\" + DirectoryNameMain;
+                    foreach (var c in filesOfNewVesion)
+                    {
+                        File.Copy(c, t+@"\"+Path.GetFileName(c), true);
+
+                        iterator++;
+                        backgroundWorker.ReportProgress(iterator / count);
+                    }
+                    whatHapend = "Удаление выбранных файлов";
+                    backgroundWorker.ReportProgress(iterator / count);
+
+                    //Удаляем те файлы, которые нужно удалить
+                    if (deletedList.Any())
+                    {
+                        foreach (var c in deletedList)
+                        {
+                            File.Delete(t + @"\" + Path.GetFileName(c.Key));
+
+                            iterator++;
+                            backgroundWorker.ReportProgress(iterator / count);
+                        }
+                    }
+                    //Добавляем новую версию в таблицу версий
+                    createDbTableFromClient(NumberOfVersion);
+
+                    whatHapend = "Меняем файлы в папке версий";
+                    backgroundWorker.ReportProgress(count);
+
+                    //Переводим файлы из папки эталона в таблицу файлов, если таблицы нет создаем первую версию всех файлов в папке
+                    if (listsOfUpdateableFiles != null)
+                        return convertFilesToTableInBase(DirectoryNameMain, listsOfUpdateableFiles);
+                    else
+                        return convertFilesToTableInBase(DirectoryNameMain);
+                }
+            }
+            return filesList;
+        }
+
+        public void createDbTableFromClient(string NumberOfVersion)
+        {
+            _applicationContext.versions.Add(new VersionModel()
+            {
+                id = _applicationContext.versions.Max(x=>x.id)+1,
+                main_version = NumberOfVersion.Split(".")[0],
+                sub_version = NumberOfVersion.Split(".")[1],
+                date_time = DateTime.Now
+            });
+            _applicationContext.SaveChanges();
+        }
+
+        public void createZipAndTableByPath(string pathToVersion,string pathToMainClient, string NumberOfVersionOld)
+        {
+            DirectoryInfo dirInfo = new DirectoryInfo(pathToVersion);
+            if (!dirInfo.Exists)
+            {
+                dirInfo.Create();
+            }
+            //dirInfo.CreateSubdirectory(NumberOfVersionOld);
+
+            //Сохраняем архив со старой версией в папку с версиями (DirectoryNameMain)
+            zipCurrentClient(pathToMainClient, pathToVersion + @"\" + NumberOfVersionOld + ".zip");
+            //Создаем в той же папке таблицу этой версии
+            createTable(pathToVersion + @"\" + NumberOfVersionOld + ".csv");
+            //Перемещаем файл с описанием обновления в папку с этим обновлением
+            File.Copy(Environment.CurrentDirectory + @"\" + Properties.Resources.ChangesDocument, pathToVersion + @"\" + Properties.Resources.ChangesDocument,true);
+        }
+
+        public bool zipCurrentClient(string folderToPack, string nameOfZip)
+        {
+            try
+            {
+                if(File.Exists(nameOfZip))
+                    File.Delete(nameOfZip);
+                ZipFile.CreateFromDirectory(folderToPack, nameOfZip,CompressionLevel.Fastest,false);
+                return true;
+            }
+            catch (Exception ex) 
+            {
+                ErrorInfo = ex.Message;
+                return false;
+            }
+
+        }
+
+        public bool unzipToCurrentClient(string pathToVersion)
+        {
+            try
+            {
+                string zipFile = pathToVersion; // сжатый файл
+                string targetFolder = Environment.CurrentDirectory+@"\"+ Properties.Resources.ClientFolderName; // папка, куда распаковывается файл
+
+                ZipFile.ExtractToDirectory(zipFile, targetFolder,true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ErrorInfo = ex.Message;
+                return false;
+            }
+        }
+        /// <summary>
+        /// Делает id выбранной версии максимальным в таблице (необходимо для возврата к версии)
+        /// </summary>
+        /// <param name="version">Полная версия</param>
+        public void increaseIdOfVersion(string version)
+        {
+            string main = version.Split('.')[0];
+            string sub = version.Split('.')[1];
+            var save = _applicationContext.versions.Where(x => x.main_version == main && x.sub_version == sub).First();
+            _applicationContext.versions.Remove(save);
+            _applicationContext.SaveChanges();
+            save.id = _applicationContext.versions.Max(x => x.id) + 1;
+            _applicationContext.versions.Add(save);
+            _applicationContext.SaveChanges();
+        }
+
+        public void createDirectoryOfVersion(string versFolder,string vers)
+        {
+            Directory.CreateDirectory(versFolder+@"\"+vers);
+        }
+
+
+        public bool delTable(string tableName)
+        {
+            try
+            {
+                _applicationContext.files.RemoveRange(_applicationContext.files);
+                _applicationContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ErrorInfo = ex.Message;
+                return false;
+            }
+        }
+        public void createTable(string path)
+        {
+            var files = _applicationContext.files.ToList();
+            files = files.OrderBy(x => x.id).ToList();
+            Type t = typeof(FileTableModel);
+            var f = t.GetProperties();
+            string s = "";
+            for(int i = 0,j =0; i < f.Length; i++,j++)
+            {
+                s += f[i].Name;
+                if (j < f.Length - 1)
+                {
+                    s += ",";
+                }
+            }
+            s.Substring(0, s.Length - 1);
+            using (var sw = new StreamWriter(path, false, Encoding.Default))
+            {
+                sw.WriteLine(s);
+                for(int i = 0; i < files.Count; i++)
+                {
+                    sw.WriteLine(files[i].id + "," + files[i].name + "," + files[i].version + "," + files[i].date_time.ToString());
+                }
+            }
+        }
+
+        public void createChangesFile(string path,string text)
+        {
+            using (var sw = new StreamWriter(path, false, Encoding.Default))
+            {
+                sw.Write(text);
+            }
+        }
+
+        public List<double> getAllVersions()
+        {
+           return _applicationContext.versions.Select(x => x.main_version+"," + x.sub_version).ToList().Select(x => double.Parse(x)).ToList();
+        }
+
+        public List<FileTableModel> getListFilesFromTable(string pathToTable)
+        {
+            if (!File.Exists(pathToTable))
+                return null;
+            var list = new List<FileTableModel>();
+            using (var sr = new StreamReader(pathToTable, Encoding.Default))
+            {
+                sr.ReadLine();
+                while(!sr.EndOfStream)
+                {
+                    string s = sr.ReadLine();
+                    string[] snext = s.Split(',');
+                    list.Add(new FileTableModel()
+                    {
+                        id = long.Parse(snext[0]),
+                        name = snext[1],
+                        version = int.Parse(snext[2]),
+                        date_time = snext[3]
+                    });
+                }
+            }
+            return  list.OrderBy(x=>x.id).ToList();
+        }
+
+        public List<FileTableModel> getListFiles()
+        {
+            return _applicationContext.files.OrderBy(x=>x.id).ToList();
+        }
+
+        public List<VersionModelPretty> getVersionModels()
+        {
+            List<VersionModelPretty> ans = new List<VersionModelPretty>();
+            var l = _applicationContext.versions;
+            foreach(var c in l)
+            {
+                ans.Add(new VersionModelPretty(c.id, c.main_version, c.sub_version, c.date_time));
+            }
+            return ans.OrderBy(x => x.Id).ToList();
+        }
+
+        public long getMaxId()
+        {
+            return _applicationContext.files.LongCount();
+        }
+
+        public string getLastMainVersion()
+        {
+            //return _applicationContext.versions.Select(x => x.main_version).Max(x => int.Parse(x)).ToString();
+            return _applicationContext.versions.Where(j => j.id == _applicationContext.versions.Max(x => x.id)).First().main_version;
+        }
+
+        public string getLastSubVersion() 
+        {
+            return _applicationContext.versions.Where(j => j.id == _applicationContext.versions.Max(x => x.id)).First().sub_version;
+        }
+
+        public string getLastFullVersion()
+        {
+            return getLastMainVersion() + "." + getLastSubVersion();
+        }
+
+        /// <summary>
+        /// Метод для получения последней версии именно по полю версии и субверсии а не id (суб номер версии сразу увеличен на 1)
+        /// </summary>
+        /// <returns>полученная версия</returns>
+        public string getLastFullVersionByMainAndSubVersion()
+        {
+            var maxMain = _applicationContext.versions.Select(x => int.Parse(x.main_version)).ToList().Max().ToString();
+            var maxSubInMaxMain = _applicationContext.versions.Where(x => x.main_version == maxMain).ToList().Select(x=>int.Parse(x.sub_version)).ToList().Max();
+            return maxMain.ToString()+"."+(maxSubInMaxMain+1).ToString();
+        }
+
+        public Tuple<List<FileTableModel>,List<FileTableModel>> comparisonByName(List<FileTableModel> input,List<string> names)
+        {
+            List<FileTableModel> ans = new List<FileTableModel>();
+            List<FileTableModel> ans2 = new List<FileTableModel>();
+            long id = input.Max(x => x.id)+1;
+            foreach (var c in names)
+            {
+                var s = Path.GetFileName(c);
+                var k = input.Where(x => x.name == s).ToList();
+                if (k!=null&&k.Count!=0)
+                {
+                    ans.Add(k.First());
+                }
+                else
+                {
+                    ans2.Add(new FileTableModel()
+                    {
+                        id = id,
+                        name = Path.GetFileName(c),
+                        version = 1,
+                        date_time = DateTime.Now.ToLongTimeString()
+                    });
+                    id++;
+                }
+            }
+            return new Tuple<List<FileTableModel>, List<FileTableModel>> ( ans,ans2);
+        }
+
+        public List<FileTableModel> getAddedList(List<FileTableModel> input)
+        {
+            foreach(var c in input)
+            {
+                c.version++;
+                c.date_time = DateTime.Now.ToLongTimeString();
+            }
+            return input;
+        }
+
+
+    }
+}

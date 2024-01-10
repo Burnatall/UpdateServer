@@ -1,0 +1,44 @@
+﻿using CheckSumTerminal.IModels;
+using CheckSumTerminal.IView;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Xml.Serialization;
+
+namespace CheckSumTerminal.Presenter
+{
+    internal class ProgressBarPresenter
+    {
+        private IMainModel _model;
+        private IProgressWindow _view;
+
+        private string version;
+        private List<string> paths = new List<string>();
+        private Dictionary<string,int> keyValuePairs = new Dictionary<string,int>();    
+
+        public ProgressBarPresenter(IMainModel model,IProgressWindow view)
+        {
+            _model = model;
+            _view = view;
+        }
+
+        public ProgressBarPresenter(IMainModel model, IProgressWindow view,string version,List<string> updatedPath,Dictionary<string,int> changingFilesName)
+        {
+            _model = model;
+            _view = view;
+            _view.Load += _view_Load;
+            this.version = version;
+            paths= updatedPath;
+            keyValuePairs = changingFilesName;
+        }
+
+        private void _view_Load(object sender, EventArgs e)
+        {
+            _model.addVersion(Properties.Resources.ClientFolderName, Properties.Resources.VersionFolderName, version, paths, keyValuePairs,null);
+            _model.createTable(Environment.CurrentDirectory + @"\" + Properties.Resources.CSVTableName);
+            _view.Close();
+        }
+    }
+}

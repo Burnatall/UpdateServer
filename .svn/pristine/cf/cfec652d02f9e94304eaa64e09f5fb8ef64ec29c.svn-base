@@ -1,0 +1,19 @@
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace CheckSumTerminal.IView
+{
+    public interface IVersionSelectWindow
+    {
+        DataGrid VersionDataG { get; set; }
+        Window Window { get; set; }
+        DataGrid DataGrid { get; set; }
+
+        event EventHandler backToRevision;
+        event EventHandler<RoutedEventArgs> load;
+        event EventHandler showChanges;
+
+        void CreateDataGrid();
+    }
+}

@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="MainClient\**" />
+    <EmbeddedResource Remove="MainClient\**" />
+    <None Remove="MainClient\**" />
+    <Page Remove="MainClient\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\m.petryaev\source\repos\CheckSum\CheckSumTerminal\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="View\bad.jpg" />
+    <None Remove="View\splashscreen_GIS.png" />
+    <None Remove="View\wawe.gif" />
+    <None Remove="View\Иконка.bmp" />
+    <None Remove="wawe.gif" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\m.petryaev\source\repos\CheckSum\CheckSumTerminal\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.18" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="View\splashscreen_GIS.png" />
+    <Resource Include="View\wawe.gif" />
+    <Resource Include="View\Иконка.bmp" />
+    <Resource Include="View\bad.jpg" />
+  </ItemGroup>
+
+</Project>

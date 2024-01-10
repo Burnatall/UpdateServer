@@ -1,0 +1,25 @@
+﻿using CheckSumServer.Functional;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+
+namespace CheckSumServer.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class GetDescriptionController : Controller
+    {
+
+        private readonly IConfiguration _configuration;
+
+        public GetDescriptionController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        [HttpGet]
+        public string GetDesription(string number)
+        {
+            return Description.getByNumber(number);
+        }
+    }
+}

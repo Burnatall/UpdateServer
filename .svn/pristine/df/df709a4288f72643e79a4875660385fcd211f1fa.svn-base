@@ -1,0 +1,20 @@
+﻿CheckSumTerminal
+1.0.0.0
+
+winexe
+C#
+.cs
+C:\Work\updateserv ACTUAL\CheckSumTerminal\obj\Debug\netcoreapp3.1\
+CheckSumTerminal
+none
+false
+TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1;
+C:\Work\updateserv ACTUAL\CheckSumTerminal\App.xaml
+51558706017
+
+27147655373
+2122099885583
+View\CreateDescriptionWindow.xaml;View\MainWindow.xaml;View\ShowChangesWindow.xaml;View\UpdateWindow.xaml;View\VersionSelectWindow.xaml;
+
+False
+

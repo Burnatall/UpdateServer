@@ -1,0 +1,17 @@
+﻿using CheckSumTerminal.IModels;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CheckSumTerminal.Models
+{
+    internal class ProgressBarModel : IProgressBarModel
+    {
+        /// <summary>
+        /// Для progressBar
+        /// </summary>
+        public int iterator { get; set; }
+        public int total { get; set; }
+        public string whatHapend { get; set; }
+    }
+}

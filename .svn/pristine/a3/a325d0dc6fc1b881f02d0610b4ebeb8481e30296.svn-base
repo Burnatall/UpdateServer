@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CheckSumTerminal.IModels
+{
+    internal interface IProgressBarModel
+    {
+        int iterator { get; set; }
+        int total { get; set; }
+        string whatHapend { get; set; }
+    }
+}
