@@ -66,19 +66,19 @@ namespace CheckSumTerminal.Presenter
 
             _view.BackgroundWorker.ReportProgress(current / max);
             //Сохраняем текущую версию
-            _model.createZipAndTableByPath(pathToVersion + @"\" + versionCurrent, pathToMainClient, _model.getLastFullVersion());
+            _model.CreateZipAndTableByPath(pathToVersion + @"\" + versionCurrent, pathToMainClient, _model.GetLastFullVersion());
 
             current++;
             _view.BackgroundWorker.ReportProgress(current / max);
 
             //Перемещаем описание обновления в основную папку
-            _model.createChangesFile(Environment.CurrentDirectory + @"\" + Properties.Resources.ChangesDocument, File.ReadAllText(pathToVersion + @"\" + str + @"\" + Properties.Resources.ChangesDocument));
+            _model.CreateChangesFile(Environment.CurrentDirectory + @"\" + Properties.Resources.ChangesDocument, File.ReadAllText(pathToVersion + @"\" + str + @"\" + Properties.Resources.ChangesDocument));
 
             current++;
             _view.BackgroundWorker.ReportProgress(current / max);
 
             //Распаковываем выбранную версию в таблицу эталона
-            _model.unzipToCurrentClient(pathToVersion + @"\" + str + @"\" + str + ".zip");
+            _model.UnzipToCurrentClient(pathToVersion + @"\" + str + @"\" + str + ".zip");
 
             current++;
             _view.BackgroundWorker.ReportProgress(current / max);
@@ -96,25 +96,25 @@ namespace CheckSumTerminal.Presenter
             }
             current++;
             _view.BackgroundWorker.ReportProgress(current / max);
-            _model.convertFilesToTableInBase(pathToMainClient, updateableFiles);
+            _model.ConvertFilesToTableInBase(pathToMainClient, updateableFiles);
 
             current++;
             _view.BackgroundWorker.ReportProgress(current / max);
 
             //Добавляем во все поздние версии пометку что они идут от узла к которому мы вернулись
-            _model.addParentVersionToBase(_model.getVersionByNumber(str));
+            _model.AddParentVersionToBase(_model.GetVersionByNumber(str));
 
             current++;
             _view.BackgroundWorker.ReportProgress(current / max);
 
             //Делаем id страой версии максимальным, что будет обозначать что именно на этой версии мы сейчас находимся
-            _model.increaseIdOfVersion(str);
+            _model.IncreaseIdOfVersion(str);
 
             current++;
             _view.BackgroundWorker.ReportProgress(current / max);
 
             //Создаем csv таблицу из базы 
-            _model.createTable(Environment.CurrentDirectory + @"\" + Properties.Resources.CSVTableName);
+            _model.CreateTable(Environment.CurrentDirectory + @"\" + Properties.Resources.CSVTableName);
 
             current = max;
             _view.BackgroundWorker.ReportProgress(current / max);
@@ -128,7 +128,7 @@ namespace CheckSumTerminal.Presenter
                 MessageBox.Show("Версия не выбрана", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            else if(((VersionModelPretty)_view.VersionDataG.SelectedItem).Версия == _model.getLastFullVersion())
+            else if(((VersionModelPretty)_view.VersionDataG.SelectedItem).Версия == _model.GetLastFullVersion())
             {
                 MessageBox.Show("Нельзя вернуться к текущей версии", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -138,10 +138,10 @@ namespace CheckSumTerminal.Presenter
             str = ((VersionModelPretty)_view.VersionDataG.SelectedItem).Версия;
             pathToVersion = Environment.CurrentDirectory + @"\" + Properties.Resources.VersionFolderName;
             pathToMainClient = Environment.CurrentDirectory + @"\" + Properties.Resources.ClientFolderName;
-            versionCurrent = _model.getLastFullVersion();
+            versionCurrent = _model.GetLastFullVersion();
 
             //Получаем список файлов из таблицы версии
-            list = _model.getListFilesFromTable(pathToVersion + @"\" + str + @"\" + str + ".csv");
+            list = _model.GetListFilesFromTable(pathToVersion + @"\" + str + @"\" + str + ".csv");
 
             if (list == null)
             {
@@ -166,7 +166,7 @@ namespace CheckSumTerminal.Presenter
 
         private void _view_load(object sender, EventArgs e)
         {
-            _view.VersionDataG.ItemsSource = _model.getVersionModels();
+            _view.VersionDataG.ItemsSource = _model.GetVersionModels();
         }
     }
 }

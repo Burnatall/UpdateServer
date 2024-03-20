@@ -29,7 +29,7 @@ namespace CheckSumTerminal.Presenter
         private void _view_showChanges(object sender, EventArgs e)
         {
             var vrs = _view.versionComboBox.SelectedItem.ToString();
-            if (_model.getLastFullVersion() != vrs)
+            if (_model.GetLastFullVersion() != vrs)
                 _view.ShowTextBox(File.ReadAllText(Properties.Resources.VersionFolderName + @"\" + _view.versionComboBox.SelectedItem.ToString() + @"\" + Properties.Resources.ChangesDocument));
             else
                 _view.ShowTextBox(File.ReadAllText(Properties.Resources.ChangesDocument));
@@ -39,13 +39,13 @@ namespace CheckSumTerminal.Presenter
         {
             string vers = _view.versionComboBox.SelectedItem.ToString();
             
-            string versPrev = _model.getChosenFullVersion( _model.getPreviousVersionByNumber(vers));
-            var prevList = _model.getListFilesFromTable(Properties.Resources.VersionFolderName + @"\" + versPrev + @"\" + versPrev + ".csv");
+            string versPrev = _model.GetChosenFullVersion( _model.GetPreviousVersionByNumber(vers));
+            var prevList = _model.GetListFilesFromTable(Properties.Resources.VersionFolderName + @"\" + versPrev + @"\" + versPrev + ".csv");
             List<FileTableModel> curList;
             if (_view.versionComboBox.SelectedIndex != _view.versionComboBox.Items.Count - 1)
-                curList = _model.getListFilesFromTable(Properties.Resources.VersionFolderName + @"\" + vers + @"\" + vers + ".csv");
+                curList = _model.GetListFilesFromTable(Properties.Resources.VersionFolderName + @"\" + vers + @"\" + vers + ".csv");
             else
-                curList = _model.getListFilesFromTable(Environment.CurrentDirectory + @"\" + Properties.Resources.CSVTableName);
+                curList = _model.GetListFilesFromTable(Environment.CurrentDirectory + @"\" + Properties.Resources.CSVTableName);
 
 
             List<long> ids = new List<long>();
@@ -93,7 +93,7 @@ namespace CheckSumTerminal.Presenter
 
         private void _view_load(object sender, EventArgs e)
         {
-            var lst = _model.getVersionModels().Select(x=>x.Версия);
+            var lst = _model.GetVersionModels().Select(x=>x.Версия);
             _view.versionComboBox.ItemsSource = lst;
             _view.versionComboBox.SelectedIndex = _view.versionComboBox.Items.Count - 1;
         }

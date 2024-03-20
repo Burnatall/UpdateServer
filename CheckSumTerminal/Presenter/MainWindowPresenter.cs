@@ -26,15 +26,15 @@ namespace CheckSumTerminal.Presenter
         {
             _view = view;
             _model = model;
-            _view.addTableEvent += beginUpdate;
-            _view.updateEvent += update;
-            _view.showVersionEvent += _view_showVersionEvent;
-            _view.load += _view_load;
+            _view.AddTableEvent += beginUpdate;
+            _view.UpdateEvent += update;
+            _view.ShowVersionEvent += _view_showVersionEvent;
+            _view.Load += _view_load;
         }
 
         private void _view_load(object sender, EventArgs e)
         {
-            _view.VersionTextBox.Text = _model.getLastFullVersion();
+            _view.VersionTextBox.Text = _model.GetLastFullVersion();
         }
 
         private void _view_showVersionEvent(object sender, EventArgs e)
@@ -46,9 +46,9 @@ namespace CheckSumTerminal.Presenter
 
         private void beginUpdate(object sender, EventArgs e)
         {
-            if (!_model.getListFiles().Any())
+            if (!_model.GetListFiles().Any())
             {
-                var list = _model.addVersion(_view.DirectoryComboBox.SelectedItem.ToString(), _view.FileComboBox.SelectedItem.ToString(), _view.VersionTextBox.Text, null, null, null,null);
+                var list = _model.AddVersion(_view.DirectoryComboBox.SelectedItem.ToString(), _view.FileComboBox.SelectedItem.ToString(), _view.VersionTextBox.Text, null, null, null,null);
                 if (list == null)
                 {
                     MessageBox.Show(_model.ErrorInfo, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);

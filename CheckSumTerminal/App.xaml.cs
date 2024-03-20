@@ -15,6 +15,6 @@ namespace CheckSumTerminal
     /// </summary>
     public partial class App : Application
     {
-        MainModel model = new MainModel();
+
     }
 }

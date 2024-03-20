@@ -9,8 +9,8 @@ namespace CheckSumTerminal.Context
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<FileTableModel> files { get; set; }
-        public DbSet<VersionModel> versions { get; set; }
+        public DbSet<FileTableModel> Files { get; set; }
+        public DbSet<VersionModel> Versions { get; set; }
         public ApplicationContext()
         {
             //Database.EnsureCreated();
@@ -29,7 +29,7 @@ namespace CheckSumTerminal.Context
                 Properties.Resources.ConnectionStringTest);
         }
 
-        public DbContext GetNew()
+        public static DbContext GetNew()
         {
             return new ApplicationContext();
         }

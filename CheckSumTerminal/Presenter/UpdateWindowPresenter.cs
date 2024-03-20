@@ -67,17 +67,17 @@ namespace CheckSumTerminal.Presenter
                 if(!delFiles.ContainsKey(g.name.Replace(" (DEL)", "")))
                     delFiles.Add(g.name.Replace(" (DEL)",""), g.version);
             }
-            setDataInGrids(_model.getListFiles(), null, null, deletedList);
+            setDataInGrids(_model.GetListFiles(), null, null, deletedList);
         }
 
         private void drag_NewData(object sender, DragEventArgs e)
         {
             var l = (string[])e.Data.GetData(DataFormats.FileDrop);
             fileNames.AddRange(l);
-            List<FileTableModel> ln = _model.comparisonByName(fileTableModels, l.ToList()).Item1;
-            List<FileTableModel> lnNF = _model.comparisonByName(fileTableModels, l.ToList()).Item2;
+            List<FileTableModel> ln = _model.ComparisonByName(fileTableModels, l.ToList()).Item1;
+            List<FileTableModel> lnNF = _model.ComparisonByName(fileTableModels, l.ToList()).Item2;
             List<FileTableModel> newL = ln.Select(x=>x.clone()).ToList();
-            List<FileTableModel> newN = _model.getAddedList(newL);
+            List<FileTableModel> newN = _model.GetAddedList(newL);
             foreach (var g in newN)
             {
                 updateableFiles.Add(g.name, g.version);
@@ -107,10 +107,10 @@ namespace CheckSumTerminal.Presenter
         {
             var f = e.FileNames;
             fileNames.AddRange(f);
-            List<FileTableModel> ln = _model.comparisonByName(fileTableModels, f.ToList()).Item1;
-            List<FileTableModel> lnNF = _model.comparisonByName(fileTableModels, f.ToList()).Item2;
+            List<FileTableModel> ln = _model.ComparisonByName(fileTableModels, f.ToList()).Item1;
+            List<FileTableModel> lnNF = _model.ComparisonByName(fileTableModels, f.ToList()).Item2;
             List<FileTableModel> newL = ln.Select(x => x.clone()).ToList();
-            List<FileTableModel> newN = _model.getAddedList(newL);
+            List<FileTableModel> newN = _model.GetAddedList(newL);
             foreach(var g in newN)
             {
                 if(!updateableFiles.ContainsKey(g.name))
@@ -131,11 +131,11 @@ namespace CheckSumTerminal.Presenter
 
         private void load_Data(object sender, EventArgs e)
         {
-            var l = _model.getListFiles();
+            var l = _model.GetListFiles();
             _view.CurrentGrid.ItemsSource = l;
             fileTableModels = l;
-            _view.TextBoxCurrent.Text = _model.getLastFullVersion();
-            _view.TextBoxNew.Text = _model.getLastFullVersionByMainAndSubVersion();
+            _view.TextBoxCurrent.Text = _model.GetLastFullVersion();
+            _view.TextBoxNew.Text = _model.GetLastFullVersionByMainAndSubVersion();
         }
     }
 }

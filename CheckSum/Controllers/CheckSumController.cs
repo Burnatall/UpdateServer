@@ -34,10 +34,10 @@ namespace CheckSumServer.Controllers
         public List<long> GetSum()
         {
             var cc = ControllerContext.HttpContext;
-            StreamReader s = new StreamReader(cc.Request.Body);
+            StreamReader s = new(cc.Request.Body);
             List<FileTableModel> files = JsonConvert.DeserializeObject<List<FileTableModel>>(s.ReadToEndAsync().Result);
 
-            comparison c = new comparison();
+            comparison c = new();
             var ans = c.compare(files, _configuration);
 
             var ip = cc.Connection.RemoteIpAddress.ToString();

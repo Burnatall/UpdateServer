@@ -15,10 +15,10 @@ namespace CheckSumTerminal.IView
         ComboBox FileComboBox { get; set; }
         TextBox VersionTextBox { get; set; }
 
-        event EventHandler addTableEvent;
-        event EventHandler updateEvent;
-        event EventHandler showVersionEvent;
-        event EventHandler load;
+        event EventHandler AddTableEvent;
+        event EventHandler UpdateEvent;
+        event EventHandler ShowVersionEvent;
+        event EventHandler Load;
 
         void Initalisers();
     }

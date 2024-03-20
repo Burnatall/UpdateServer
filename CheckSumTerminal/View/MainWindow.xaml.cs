@@ -29,11 +29,11 @@ namespace CheckSumTerminal
     public partial class MainWindow : Window, IMainWindow
     {
 
-        public event EventHandler addTableEvent;
+        public event EventHandler AddTableEvent;
         public event EventHandler delTableEvent;
-        public event EventHandler updateEvent;
-        public event EventHandler showVersionEvent;
-        public event EventHandler load;
+        public event EventHandler UpdateEvent;
+        public event EventHandler ShowVersionEvent;
+        public event EventHandler Load;
 
         public ComboBox DirectoryComboBox { get; set; }
         public ComboBox FileComboBox { get; set; }
@@ -73,7 +73,7 @@ namespace CheckSumTerminal
 
         private void ButtonAdd_Click(object sender, RoutedEventArgs e)
         {
-            var handler = addTableEvent;
+            var handler = AddTableEvent;
             if (handler != null) handler(this, e);
         }
 
@@ -85,19 +85,19 @@ namespace CheckSumTerminal
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            var handler = load;
+            var handler = Load;
             if (handler != null) handler(this, e);
         }
 
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
-            var handler = updateEvent;
+            var handler = UpdateEvent;
             if (handler != null) handler(this, e);
         }
 
         private void ButtonVersion_Click(object sender, RoutedEventArgs e)
         {
-            var handler = showVersionEvent;
+            var handler = ShowVersionEvent;
             if (handler != null) handler(this, e);
         }
     }

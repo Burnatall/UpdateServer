@@ -12,17 +12,17 @@ namespace CheckSumServer.Functional
         private static IMainModel mainModel = new MainModel();
         public static int getCountOfVersion()
         {
-            return mainModel.getAllVersions().Count;
+            return mainModel.GetAllVersions().Count;
         }
 
         public static Dictionary<string, DateTime> getRange()
         {
-            return mainModel.getAllVersionWithDates();
+            return mainModel.GetAllVersionWithDates();
         }
 
         public static string getByNumber(string number)
         {
-            if (number != mainModel.getLastFullVersion())
+            if (number != mainModel.GetLastFullVersion())
                 return File.ReadAllText(Environment.CurrentDirectory + @"\" + Properties.Resources.VersionFolderName + @"\" + number + @"\" + Properties.Resources.ChangesDocument);
             else
                 return File.ReadAllText(Environment.CurrentDirectory + @"\" + Properties.Resources.ChangesDocument);

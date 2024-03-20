@@ -34,16 +34,16 @@ namespace CheckSumTerminal.Presenter
 
         private void _view_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            _model.addVersion(Properties.Resources.ClientFolderName, Properties.Resources.VersionFolderName, _view.NumberOfVersion, _view.FileNames, _view.FilesToUpdate, _view.FilesToDelete,_view.BackgroundWorker);
-            _model.createTable(Environment.CurrentDirectory + @"\" + Properties.Resources.CSVTableName);
-            _model.createChangesFile(Environment.CurrentDirectory + @"\" + Properties.Resources.ChangesDocument, new TextRange(_view.RichTextBox.Document.ContentStart, _view.RichTextBox.Document.ContentEnd).Text);
+            _model.AddVersion(Properties.Resources.ClientFolderName, Properties.Resources.VersionFolderName, _view.NumberOfVersion, _view.FileNames, _view.FilesToUpdate, _view.FilesToDelete,_view.BackgroundWorker);
+            _model.CreateTable(Environment.CurrentDirectory + @"\" + Properties.Resources.CSVTableName);
+            _model.CreateChangesFile(Environment.CurrentDirectory + @"\" + Properties.Resources.ChangesDocument, new TextRange(_view.RichTextBox.Document.ContentStart, _view.RichTextBox.Document.ContentEnd).Text);
         }
 
         private void _view_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
-            _view.ProgressBar.Maximum = _model.count;
-            _view.ProgressBar.Value = _model.iterator;
-            _view.WhatHppend.Text = _model.whatHapend;
+            _view.ProgressBar.Maximum = _model.Count;
+            _view.ProgressBar.Value = _model.Iterator;
+            _view.WhatHppend.Text = _model.WhatHapend;
         }
 
         private void _view_Start(object sender, EventArgs e)
