@@ -20,44 +20,44 @@ namespace CheckSumTerminal.View
     /// </summary>
     public partial class ShowChangesWindow : Window, IShowChangesWindow
     {
-        public DataGrid prev { get; set; }
-        public DataGrid current { get; set; }
-        public TextBlock prevText { get; set; }
-        public TextBlock currentText { get; set; }
-        public ComboBox versionComboBox { get; set; }
+        public DataGrid Prev { get; set; }
+        public DataGrid Current { get; set; }
+        public TextBlock PrevText { get; set; }
+        public TextBlock CurrentText { get; set; }
+        public ComboBox VersionComboBox { get; set; }
 
 
-        public event EventHandler comboChange;
+        public event EventHandler ComboChange;
 
-        public event EventHandler load;
+        public event EventHandler Load;
 
-        public event EventHandler showChanges;
+        public event EventHandler ShowChanges;
 
         public ShowChangesWindow(IMainModel model)
         {
             InitializeComponent();
             Bindings();
-            ShowChangesPresenter sp = new ShowChangesPresenter(this, model);
+            ShowChangesPresenter sp = new(this, model);
         }
 
         private void Bindings()
         {
-            prev = previousDataGrid;
-            current = CurrentDataGrid;
-            prevText = PreviousTextBlock;
-            currentText = CurrentTextBlock;
-            versionComboBox = VersionSelector;
+            Prev = previousDataGrid;
+            Current = CurrentDataGrid;
+            PrevText = PreviousTextBlock;
+            CurrentText = CurrentTextBlock;
+            VersionComboBox = VersionSelector;
         }
 
         public void ShowTextBox(string content)
         {
-            Window w = new Window()
+            Window w = new()
             {
                 ResizeMode = ResizeMode.NoResize,
                 
                 WindowStyle = WindowStyle.ToolWindow
             };
-            RichTextBox rtb = new RichTextBox()
+            RichTextBox rtb = new()
             {
                 FontSize = 20,
                 IsReadOnly = true,
@@ -69,20 +69,17 @@ namespace CheckSumTerminal.View
 
         private void VersionSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var handler = comboChange;
-            if (handler != null) handler(this, e);
+            ComboChange?.Invoke(this, e);
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            var handler = load;
-            if (handler != null) handler(this, e);
+            Load?.Invoke(this, e);
         }
 
         private void ShowChangesButton_Click(object sender, RoutedEventArgs e)
         {
-            var handler = showChanges;
-            if (handler != null) handler(this, e);
+            ShowChanges?.Invoke(this, e);
         }
     }
 }

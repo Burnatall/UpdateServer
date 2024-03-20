@@ -5,7 +5,7 @@ namespace CheckSumServer.Functional
 {
     public static class Parser<T,N>
     {
-        public static string getListForMessage(List<T> lst)
+        public static string GetListForMessage(List<T> lst)
         {
             string str = "{ ";
             foreach (var cq in lst)
@@ -17,7 +17,7 @@ namespace CheckSumServer.Functional
             return str;
         }
 
-        public static string getListForMessage(Dictionary<T,N> dcn)
+        public static string GetListForMessage(Dictionary<T,N> dcn)
         {
             string str = "{ ";
             foreach (var cq in dcn)

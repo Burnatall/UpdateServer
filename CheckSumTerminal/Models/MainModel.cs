@@ -32,7 +32,7 @@ namespace CheckSumTerminal.Models
         {
             _applicationContext = new ApplicationContext();
             _applicationContext.Database.EnsureCreated();
-            addNewVersionToBase(Properties.Resources.StartMainVersion, Properties.Resources.StartSubVersion);
+            AddNewVersionToBase(Properties.Resources.StartMainVersion, Properties.Resources.StartSubVersion);
         }
 
         /// <summary>
@@ -40,15 +40,15 @@ namespace CheckSumTerminal.Models
         /// </summary>
         /// <param name="main">Основная цифра версии</param>
         /// <param name="sub">Второстепенная цифра версии</param>
-        public void addNewVersionToBase(string main, string sub)
+        public void AddNewVersionToBase(string main, string sub)
         {
-            if (!_applicationContext.Versions.Where(x => (x.main_version + x.sub_version) == main + sub).Any())
+            if (!_applicationContext.Versions.Where(x => (x.MainVersion + x.SubVersion) == main + sub).Any())
             {
                 _applicationContext.Versions.Add(new VersionModel()
                 {
-                    sub_version = sub,
-                    main_version = main,
-                    date_time = DateTime.Now
+                    SubVersion = sub,
+                    MainVersion = main,
+                    DateTime = DateTime.Now
                 });
                 _applicationContext.SaveChanges();
             }
@@ -56,9 +56,9 @@ namespace CheckSumTerminal.Models
             {
                 _applicationContext.Versions.Add(new VersionModel()
                 {
-                    sub_version = sub,
-                    main_version = main,
-                    date_time = DateTime.Now
+                    SubVersion = sub,
+                    MainVersion = main,
+                    DateTime = DateTime.Now
                 });
                 _applicationContext.SaveChanges();
             }
@@ -69,18 +69,20 @@ namespace CheckSumTerminal.Models
         /// </summary>
         /// <param name="DirectoryNameMain">Выбранная директория</param>
         /// <returns></returns>
-        public List<FileTableModel> convertFilesToTableInBase(string DirectoryNameMain)
+        public List<FileTableModel> ConvertFilesToTableInBase(string DirectoryNameMain)
         {
-            List<FileTableModel> filesList = new List<FileTableModel>();
+            List<FileTableModel> filesList = new();
             var files = Directory.GetFiles(Path.GetFullPath(DirectoryNameMain));
             int i = 1;
             foreach (var c in files)
             {
-                FileTableModel ftm = new FileTableModel();
-                ftm.id = i;
-                ftm.name = Path.GetFileName(c);
-                ftm.version = 1;
-                ftm.date_time = DateTime.Now.ToLongTimeString();
+                FileTableModel ftm = new()
+                {
+                    Id = i,
+                    Name = Path.GetFileName(c),
+                    Version = 1,
+                    DateTime = DateTime.Now.ToLongTimeString()
+                };
                 filesList.Add(ftm);
                 i++;
             }
@@ -114,19 +116,21 @@ namespace CheckSumTerminal.Models
         /// <returns></returns>
         public List<FileTableModel> ConvertFilesToTableInBase(string DirectoryNameMain,Dictionary<string,int> updateableFiles)
         {
-            List<FileTableModel> filesList = new List<FileTableModel>();
+            List<FileTableModel> filesList = new();
             var files = Directory.GetFiles(Path.GetFullPath(DirectoryNameMain));
             int i = 1;
             foreach (var c in files)
             {
-                FileTableModel ftm = new FileTableModel();
-                ftm.id = i;
-                ftm.name = Path.GetFileName(c);
-                if(!updateableFiles.ContainsKey(ftm.name))
-                    ftm.version = 1;
+                FileTableModel ftm = new()
+                {
+                    Id = i,
+                    Name = Path.GetFileName(c)
+                };
+                if (!updateableFiles.ContainsKey(ftm.Name))
+                    ftm.Version = 1;
                 else
-                    ftm.version = updateableFiles[ftm.name];
-                ftm.date_time = DateTime.Now.ToLongTimeString();
+                    ftm.Version = updateableFiles[ftm.Name];
+                ftm.DateTime = DateTime.Now.ToLongTimeString();
                 filesList.Add(ftm);
                 i++;
             }
@@ -164,11 +168,11 @@ namespace CheckSumTerminal.Models
         public List<FileTableModel> AddVersion(string DirectoryNameMain, string DirectoryNameVersion, string NumberOfVersion,
             List<string> filesOfNewVesion,Dictionary<string,int> listsOfUpdateableFiles, Dictionary<string,int> deletedList, BackgroundWorker backgroundWorker)
         {
-            List<FileTableModel> filesList = new List<FileTableModel>();
-            if (_applicationContext.Files == null||_applicationContext.Files.Count()==0)
+            List<FileTableModel> filesList = new();
+            if (_applicationContext.Files == null|| !_applicationContext.Files.Any())
             {
                 CreateChangesFile(Environment.CurrentDirectory + @"\" + Properties.Resources.ChangesDocument, "Первая версия");
-                return convertFilesToTableInBase(DirectoryNameMain);
+                return ConvertFilesToTableInBase(DirectoryNameMain);
             }
             else
             {
@@ -233,7 +237,7 @@ namespace CheckSumTerminal.Models
                     if (listsOfUpdateableFiles != null)
                         return ConvertFilesToTableInBase(DirectoryNameMain, listsOfUpdateableFiles);
                     else
-                        return convertFilesToTableInBase(DirectoryNameMain);
+                        return ConvertFilesToTableInBase(DirectoryNameMain);
                 }
             }
             return filesList;
@@ -247,10 +251,10 @@ namespace CheckSumTerminal.Models
         {
             _applicationContext.Versions.Add(new VersionModel()
             {
-                id = _applicationContext.Versions.Max(x=>x.id)+1,
-                main_version = NumberOfVersion.Split(".")[0],
-                sub_version = NumberOfVersion.Split(".")[1],
-                date_time = DateTime.Now
+                Id = _applicationContext.Versions.Max(x=>x.Id)+1,
+                MainVersion = NumberOfVersion.Split(".")[0],
+                SubVersion = NumberOfVersion.Split(".")[1],
+                DateTime = DateTime.Now
             });
             _applicationContext.SaveChanges();
         }
@@ -263,7 +267,7 @@ namespace CheckSumTerminal.Models
         /// <param name="NumberOfVersionOld">Номер сохранияемой версии</param>
         public void CreateZipAndTableByPath(string pathToVersion,string pathToMainClient, string NumberOfVersionOld)
         {
-            DirectoryInfo dirInfo = new DirectoryInfo(pathToVersion);
+            DirectoryInfo dirInfo = new(pathToVersion);
             if (!dirInfo.Exists)
             {
                 dirInfo.Create();
@@ -271,7 +275,7 @@ namespace CheckSumTerminal.Models
             //dirInfo.CreateSubdirectory(NumberOfVersionOld);
 
             //Сохраняем архив со старой версией в папку с версиями (DirectoryNameMain)
-            zipCurrentClient(pathToMainClient, pathToVersion + @"\" + NumberOfVersionOld + ".zip");
+            ZipCurrentClient(pathToMainClient, pathToVersion + @"\" + NumberOfVersionOld + ".zip");
             //Создаем в той же папке таблицу этой версии
             CreateTable(pathToVersion + @"\" + NumberOfVersionOld + ".csv");
             //Перемещаем файл с описанием обновления в папку с этим обновлением
@@ -285,7 +289,7 @@ namespace CheckSumTerminal.Models
         /// <param name="folderToPack">Папка для архивирования</param>
         /// <param name="nameOfZip">Название будущего архива</param>
         /// <returns></returns>
-        public bool zipCurrentClient(string folderToPack, string nameOfZip)
+        public bool ZipCurrentClient(string folderToPack, string nameOfZip)
         {
             try
             {
@@ -333,10 +337,10 @@ namespace CheckSumTerminal.Models
         {
             string main = version.Split('.')[0];
             string sub = version.Split('.')[1];
-            var save = _applicationContext.Versions.Where(x => x.main_version == main && x.sub_version == sub).First();
+            var save = _applicationContext.Versions.Where(x => x.MainVersion == main && x.SubVersion == sub).First();
             _applicationContext.Versions.Remove(save);
             _applicationContext.SaveChanges();
-            save.id = _applicationContext.Versions.Max(x => x.id) + 1;
+            save.Id = _applicationContext.Versions.Max(x => x.Id) + 1;
             _applicationContext.Versions.Add(save);
             _applicationContext.SaveChanges();
         }
@@ -346,7 +350,7 @@ namespace CheckSumTerminal.Models
         /// </summary>
         /// <param name="versFolder">Путь к папке</param>
         /// <param name="vers">номер версии</param>
-        public void createDirectoryOfVersion(string versFolder,string vers)
+        public void CreateDirectoryOfVersion(string versFolder,string vers)
         {
             Directory.CreateDirectory(versFolder+@"\"+vers);
         }
@@ -358,7 +362,7 @@ namespace CheckSumTerminal.Models
         public void CreateTable(string path)
         {
             var files = _applicationContext.Files.ToList();
-            files = files.OrderBy(x => x.id).ToList();
+            files = files.OrderBy(x => x.Id).ToList();
             Type t = typeof(FileTableModel);
             var f = t.GetProperties();
             string s = "";
@@ -371,13 +375,11 @@ namespace CheckSumTerminal.Models
                 }
             }
             s.Substring(0, s.Length - 1);
-            using (var sw = new StreamWriter(path, false, Encoding.Default))
+            using var sw = new StreamWriter(path, false, Encoding.Default);
+            sw.WriteLine(s);
+            for (int i = 0; i < files.Count; i++)
             {
-                sw.WriteLine(s);
-                for(int i = 0; i < files.Count; i++)
-                {
-                    sw.WriteLine(files[i].id + "," + files[i].name + "," + files[i].version + "," + files[i].date_time.ToString());
-                }
+                sw.WriteLine(files[i].Id + "," + files[i].Name + "," + files[i].Version + "," + files[i].DateTime.ToString());
             }
         }
 
@@ -388,10 +390,8 @@ namespace CheckSumTerminal.Models
         /// <param name="text">Содержимое файла</param>
         public void CreateChangesFile(string path,string text)
         {
-            using (var sw = new StreamWriter(path, false, Encoding.Default))
-            {
-                sw.Write(text);
-            }
+            using var sw = new StreamWriter(path, false, Encoding.Default);
+            sw.Write(text);
         }
 
         /// <summary>
@@ -400,7 +400,7 @@ namespace CheckSumTerminal.Models
         /// <returns></returns>
         public List<double> GetAllVersions()
         {
-           return _applicationContext.Versions.Select(x => x.main_version+"," + x.sub_version).ToList().Select(x => double.Parse(x)).ToList();
+           return _applicationContext.Versions.Select(x => x.MainVersion+"," + x.SubVersion).ToList().Select(x => double.Parse(x)).ToList();
         }
 
         /// <summary>
@@ -412,7 +412,7 @@ namespace CheckSumTerminal.Models
         {
             var lst = _applicationContext.Versions.ToArray();
             VersionModel ans = null;
-            for (int i = 0; i< lst.Length && lst[i].main_version + "." + lst[i].sub_version!=number;i++)
+            for (int i = 0; i< lst.Length && lst[i].MainVersion + "." + lst[i].SubVersion!=number;i++)
                 ans = lst[i];
             return ans;
         }
@@ -424,10 +424,10 @@ namespace CheckSumTerminal.Models
         public Dictionary<string,DateTime> GetAllVersionWithDates()
         {
             var vers = _applicationContext.Versions;
-            Dictionary<string, DateTime> ans = new Dictionary<string, DateTime>();
+            Dictionary<string, DateTime> ans = new();
             foreach (var item in vers)
             {
-                ans.Add(item.main_version + "," + item.sub_version, item.date_time);
+                ans.Add(item.MainVersion + "," + item.SubVersion, item.DateTime);
             }
             return ans;
         }
@@ -451,14 +451,14 @@ namespace CheckSumTerminal.Models
                     string[] snext = s.Split(',');
                     list.Add(new FileTableModel()
                     {
-                        id = long.Parse(snext[0]),
-                        name = snext[1],
-                        version = int.Parse(snext[2]),
-                        date_time = snext[3]
+                        Id = long.Parse(snext[0]),
+                        Name = snext[1],
+                        Version = int.Parse(snext[2]),
+                        DateTime = snext[3]
                     });
                 }
             }
-            return  list.OrderBy(x=>x.id).ToList();
+            return  list.OrderBy(x=>x.Id).ToList();
         }
 
         /// <summary>
@@ -467,7 +467,7 @@ namespace CheckSumTerminal.Models
         /// <returns></returns>
         public List<FileTableModel> GetListFiles()
         {
-            return _applicationContext.Files.OrderBy(x=>x.id).ToList();
+            return _applicationContext.Files.OrderBy(x=>x.Id).ToList();
         }
 
         /// <summary>
@@ -476,11 +476,11 @@ namespace CheckSumTerminal.Models
         /// <returns></returns>
         public List<VersionModelPretty> GetVersionModels()
         {
-            List<VersionModelPretty> ans = new List<VersionModelPretty>();
+            List<VersionModelPretty> ans = new();
             var l = _applicationContext.Versions;
             foreach(var c in l)
             {
-                ans.Add(new VersionModelPretty(c.id, c.main_version, c.sub_version, c.date_time, c.parent_branch));
+                ans.Add(new VersionModelPretty(c.Id, c.MainVersion, c.SubVersion, c.DateTime, c.ParentBranch));
             }
             return ans.OrderBy(x => x.Id).ToList();
         }
@@ -491,7 +491,7 @@ namespace CheckSumTerminal.Models
         /// <returns></returns>
         public string GetLastMainVersion()
         {
-            return _applicationContext.Versions.Where(j => j.id == _applicationContext.Versions.Max(x => x.id)).First().main_version;
+            return _applicationContext.Versions.Where(j => j.Id == _applicationContext.Versions.Max(x => x.Id)).First().MainVersion;
         }
 
         /// <summary>
@@ -500,7 +500,7 @@ namespace CheckSumTerminal.Models
         /// <returns></returns>
         public string GetLastSubVersion() 
         {
-            return _applicationContext.Versions.Where(j => j.id == _applicationContext.Versions.Max(x => x.id)).First().sub_version;
+            return _applicationContext.Versions.Where(j => j.Id == _applicationContext.Versions.Max(x => x.Id)).First().SubVersion;
         }
 
         /// <summary>
@@ -520,7 +520,7 @@ namespace CheckSumTerminal.Models
         public string GetChosenFullVersion(VersionModel m)
         {
             if (m != null)
-                return m.main_version + "." + m.sub_version;
+                return m.MainVersion + "." + m.SubVersion;
             return "";
         }
 
@@ -531,7 +531,7 @@ namespace CheckSumTerminal.Models
         /// <returns></returns>
         public VersionModel GetVersionByNumber(string number)
         {
-            return _applicationContext.Versions.Where(x => x.main_version + "." + x.sub_version == number).FirstOrDefault();
+            return _applicationContext.Versions.Where(x => x.MainVersion + "." + x.SubVersion == number).FirstOrDefault();
         }
 
         /// <summary>
@@ -542,8 +542,8 @@ namespace CheckSumTerminal.Models
         {
             foreach (var c in _applicationContext.Versions)
             {
-                if (c.id > m.id)
-                    c.parent_branch = GetChosenFullVersion(m);
+                if (c.Id > m.Id)
+                    c.ParentBranch = GetChosenFullVersion(m);
             }
         }
 
@@ -553,8 +553,8 @@ namespace CheckSumTerminal.Models
         /// <returns>Полученная версия</returns>
         public string GetLastFullVersionByMainAndSubVersion()
         {
-            var maxMain = _applicationContext.Versions.Select(x => int.Parse(x.main_version)).ToList().Max().ToString();
-            var maxSubInMaxMain = _applicationContext.Versions.Where(x => x.main_version == maxMain).ToList().Select(x=>int.Parse(x.sub_version)).ToList().Max();
+            var maxMain = _applicationContext.Versions.Select(x => int.Parse(x.MainVersion)).ToList().Max().ToString();
+            var maxSubInMaxMain = _applicationContext.Versions.Where(x => x.MainVersion == maxMain).ToList().Select(x=>int.Parse(x.SubVersion)).ToList().Max();
             return maxMain.ToString()+"."+(maxSubInMaxMain+1).ToString();
         }
 
@@ -566,13 +566,13 @@ namespace CheckSumTerminal.Models
         /// <returns></returns>
         public Tuple<List<FileTableModel>,List<FileTableModel>> ComparisonByName(List<FileTableModel> input,List<string> names)
         {
-            List<FileTableModel> ans = new List<FileTableModel>();
-            List<FileTableModel> ans2 = new List<FileTableModel>();
-            long id = input.Max(x => x.id)+1;
+            List<FileTableModel> ans = new();
+            List<FileTableModel> ans2 = new();
+            long id = input.Max(x => x.Id)+1;
             foreach (var c in names)
             {
                 var s = Path.GetFileName(c);
-                var k = input.Where(x => x.name == s).ToList();
+                var k = input.Where(x => x.Name == s).ToList();
                 if (k!=null&&k.Count!=0)
                 {
                     ans.Add(k.First());
@@ -581,10 +581,10 @@ namespace CheckSumTerminal.Models
                 {
                     ans2.Add(new FileTableModel()
                     {
-                        id = id,
-                        name = Path.GetFileName(c),
-                        version = 1,
-                        date_time = DateTime.Now.ToLongTimeString()
+                        Id = id,
+                        Name = Path.GetFileName(c),
+                        Version = 1,
+                        DateTime = DateTime.Now.ToLongTimeString()
                     });
                     id++;
                 }
@@ -601,8 +601,8 @@ namespace CheckSumTerminal.Models
         {
             foreach(var c in input)
             {
-                c.version++;
-                c.date_time = DateTime.Now.ToLongTimeString();
+                c.Version++;
+                c.DateTime = DateTime.Now.ToLongTimeString();
             }
             return input;
         }
@@ -616,7 +616,7 @@ namespace CheckSumTerminal.Models
         public List<string> VersionCheck(string pathToFolder)
         {
             var lstV = _applicationContext.Versions.ToList();
-            List<string> result = new List<string>();
+            List<string> result = new();
             if (Directory.Exists(pathToFolder) && Directory.GetDirectories(pathToFolder).Length == lstV.Count - 1)
             {
                 foreach (var c in lstV)

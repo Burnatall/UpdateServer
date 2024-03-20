@@ -17,7 +17,7 @@ namespace CheckSumServer.Functional
 
         private string sqlConnection;
         private NpgsqlDataReader reader;
-        private DataTable table = new DataTable();
+        private DataTable table = new();
 
         public DbGetTable(IConfiguration configuration)
         {
@@ -29,35 +29,33 @@ namespace CheckSumServer.Functional
         /// Получает таблицу файлов и версий из базы
         /// </summary>
         /// <returns></returns>
-        public List<FileTableModel> getTable(string tableName)
+        public List<FileTableModel> GetTable(string tableName)
         {
-            List<FileTableModel> ans = new List<FileTableModel>();
+            List<FileTableModel> ans = new();
             //DataTable table = new DataTable();
             //string sqlConnection = _configuration.GetConnectionString("ITSGISAppCon");
             //NpgsqlDataReader reader;
             string query = @"Select * From "+tableName;
-            using (NpgsqlConnection connection = new NpgsqlConnection(sqlConnection))
+            using (NpgsqlConnection connection = new(sqlConnection))
             {
                 connection.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
-                {
-                    reader = command.ExecuteReader();
-                    table.Load(reader);
+                using NpgsqlCommand command = new(query, connection);
+                reader = command.ExecuteReader();
+                table.Load(reader);
 
-                    List<DataRow> ldr = table.AsEnumerable().ToList();
+                List<DataRow> ldr = table.AsEnumerable().ToList();
 
-                    reader.Close();
-                    connection.Close();
-                }
+                reader.Close();
+                connection.Close();
             }
             for(int i = 0; i < table.Rows.Count; i++)
             {
                 ans.Add(new FileTableModel()
                 {
-                    id = (long)table.Rows[i]["id"],
-                    name = (string)table.Rows[i]["name"],
-                    version = (int)table.Rows[i]["version"],
-                    date_time = (string)table.Rows[i]["date_time"]
+                    Id = (long)table.Rows[i]["id"],
+                    Name = (string)table.Rows[i]["name"],
+                    Version = (int)table.Rows[i]["version"],
+                    DateTime = (string)table.Rows[i]["dateTime"]
                 });
             }
 
@@ -65,29 +63,27 @@ namespace CheckSumServer.Functional
 
         }
 
-        public string getPathOfNeededFile(long id)
+        public string GetPathOfNeededFile(long id)
         {
             string query = @"Select name From " + Properties.Resources.TableName + " Where id = "+ id;
             string ans = "";
-            using (NpgsqlConnection connection = new NpgsqlConnection(sqlConnection))
+            using (NpgsqlConnection connection = new(sqlConnection))
             {
                 connection.Open();
-                using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
+                using NpgsqlCommand command = new(query, connection);
+                reader = command.ExecuteReader();
+                table.Load(reader);
+                try
                 {
-                    reader = command.ExecuteReader();
-                    table.Load(reader);
-                    try
-                    {
-                        ans = (string)table.AsEnumerable().ToList()[0].ItemArray[0];
-                    }
-                    catch (ArgumentOutOfRangeException ex) 
-                    {
-                        return "No such number of file";
-                    }
-
-                    reader.Close();
-                    connection.Close();
+                    ans = (string)table.AsEnumerable().ToList()[0].ItemArray[0];
                 }
+                catch (ArgumentOutOfRangeException ex)
+                {
+                    return "No such number of file";
+                }
+
+                reader.Close();
+                connection.Close();
             }
 
             return ans;

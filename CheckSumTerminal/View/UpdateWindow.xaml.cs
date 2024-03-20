@@ -24,14 +24,14 @@ namespace CheckSumTerminal
     public partial class UpdateWindow : Window, IUpdateWindow
     {
 
-        public event EventHandler loadData;
-        public event EventHandler updateData;
-        public event EventHandler<OpenFileDialog> addopenFileDialogHandler;
-        public event DragEventHandler dragNewData;
-        public event EventHandler deleteData;
-        public event EventHandler deleteDataClear;
+        public event EventHandler LoadData;
+        public event EventHandler UpdateData;
+        public event EventHandler<OpenFileDialog> AddopenFileDialogHandler;
+        public event DragEventHandler DragNewData;
+        public event EventHandler DeleteData;
+        public event EventHandler DeleteDataClear;
 
-        public string[] _files { get; set; }
+        public string[] Files { get; set; }
 
         public DataGrid CurrentGrid { get; set; }
         public DataGrid NewFilesGrid { get; set; }
@@ -39,29 +39,28 @@ namespace CheckSumTerminal
         public TextBox TextBoxCurrent { get; set; }
         public TextBox TextBoxNew { get; set; }
 
-        public Dispatcher dispatcher { get; set; }
+        public Dispatcher Dispatcher { get; set; }
 
 
         public UpdateWindow()
         {
             InitializeComponent();
-            bindings();
-            UpdateWindowPresenter p = new UpdateWindowPresenter(this,new MainModel());
+            Bindings();
+            UpdateWindowPresenter p = new(this,new MainModel());
         }
 
-        private void bindings()
+        private void Bindings()
         {
             CurrentGrid = CurrentFilesDataGrid;
             NewFilesGrid = NewFilesDataGrid;
             TextBoxCurrent = TextBoxBefore;
             TextBoxNew = TextBoxAfter;
-            dispatcher = Dispatcher;
+            Dispatcher = base.Dispatcher;
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            var handler = loadData;
-            if (handler != null) handler(this, e);
+            LoadData?.Invoke(this, e);
         }
 
         private void NewFilesDataGrid_Drop(object sender, DragEventArgs e)
@@ -69,8 +68,7 @@ namespace CheckSumTerminal
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
 
-                var handler = dragNewData;
-                if (handler != null) handler(this, e);
+                DragNewData?.Invoke(this, e);
                 GridTextBlock.Visibility = Visibility.Collapsed;
                 // Note that you can have more than one file.
                 //_files = (string[])e.Data.GetData(DataFormats.FileDrop);
@@ -82,8 +80,7 @@ namespace CheckSumTerminal
 
         private void ButtonOK_Click(object sender, RoutedEventArgs e)
         {
-            var handler = updateData;
-            if (handler != null) handler(this, e);
+            UpdateData?.Invoke(this, e);
             Close();
         }
 
@@ -91,27 +88,26 @@ namespace CheckSumTerminal
         {
             GridTextBlock.Visibility = Visibility.Collapsed;
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = true;
+            OpenFileDialog openFileDialog = new()
+            {
+                Multiselect = true
+            };
             if (openFileDialog.ShowDialog() == true)
             {
-                var handler = addopenFileDialogHandler;
-                if (handler != null) handler(this, openFileDialog);
+                AddopenFileDialogHandler?.Invoke(this, openFileDialog);
             }
         }
 
         private void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
             GridTextBlock.Visibility = Visibility.Collapsed;
-            var handler = deleteData;
-            if (handler != null) handler(this, e);
+            DeleteData?.Invoke(this, e);
         }
 
         private void ButtonDeleteClean_Click(object sender, RoutedEventArgs e)
         {
             GridTextBlock.Visibility = Visibility.Visible;
-            var handler = deleteDataClear;
-            if (handler != null) handler(this, e);
+            DeleteDataClear?.Invoke(this, e);
         }
     }
 }

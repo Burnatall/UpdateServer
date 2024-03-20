@@ -37,9 +37,9 @@ namespace CheckSumServer.Controllers
         public IActionResult GetUpdate(long id)
         {
 
-            DbGetTable db = new DbGetTable(_configuration);
+            DbGetTable db = new(_configuration);
 
-            var filesPath = db.getPathOfNeededFile(id);
+            var filesPath = db.GetPathOfNeededFile(id);
             try
             {
                 var tst = System.IO.Path.GetFullPath(Properties.Resources.FolderName);
@@ -52,7 +52,7 @@ namespace CheckSumServer.Controllers
                 }
 
                 var ip = ControllerContext.HttpContext.Connection.RemoteIpAddress.ToString();
-                Logger.createLogWarning("Remote IP: " + ip + " Connected " + DateTime.Now.ToString() + Environment.NewLine
+                Logger.CreateLogWarning("Remote IP: " + ip + " Connected " + DateTime.Now.ToString() + Environment.NewLine
                     + "Action: " + ToString() +Environment.NewLine+"Answer: "+ filesPath + Environment.NewLine);
 
                 return PhysicalFile(tst + @"\" + filesPath, "file/dll", filesPath);

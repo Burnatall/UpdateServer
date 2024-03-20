@@ -33,16 +33,16 @@ namespace CheckSumTerminal.Presenter
         {
             _view = view;
             _model = model;
-            _view.load += _view_load;
-            _view.showChanges += _view_showChanges;
-            _view.backToRevision += _view_backToRevision;
-            _view.doWork += _view_doWork;
-            _view.progressChanged += _view_progressChanged;
-            _view.completed += _view_completed;
+            _view.Load += View_load;
+            _view.ShowChanges += View_showChanges;
+            _view.BackToRevision += View_backToRevision;
+            _view.DoWork += View_doWork;
+            _view.ProgressChanged += View_progressChanged;
+            _view.Completed += View_completed;
 
         }
 
-        private void _view_completed(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void View_completed(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
             _view.ProgressBar.Visibility = Visibility.Hidden;
             //Выводим получившийся резульат
@@ -51,15 +51,15 @@ namespace CheckSumTerminal.Presenter
             _view.Window.Title = "Версия обновлена до " + str + " Полученная таблица:";
             _view.Window.Visibility = Visibility.Visible;
             _view.Window.Show();
-            _view_load(sender, e);
+            View_load(sender, e);
         }
 
-        private void _view_progressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        private void View_progressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
             _view.ProgressBar.Value = current;
         }
 
-        private void _view_doWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        private void View_doWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             current = 1;
             max = 8 + list.Count;
@@ -84,15 +84,15 @@ namespace CheckSumTerminal.Presenter
             _view.BackgroundWorker.ReportProgress(current / max);
 
             //Меняем таблицу в базе на выбранную версию
-            Dictionary<string, int> updateableFiles = new Dictionary<string, int>();
+            Dictionary<string, int> updateableFiles = new();
             foreach (var g in list)
             {
                 current++;
                 _view.BackgroundWorker.ReportProgress(current / max);
-                if (!updateableFiles.ContainsKey(g.name))
-                    updateableFiles.Add(g.name, g.version);
+                if (!updateableFiles.ContainsKey(g.Name))
+                    updateableFiles.Add(g.Name, g.Version);
                 else
-                    updateableFiles[g.name] = g.version;
+                    updateableFiles[g.Name] = g.Version;
             }
             current++;
             _view.BackgroundWorker.ReportProgress(current / max);
@@ -121,7 +121,7 @@ namespace CheckSumTerminal.Presenter
 
         }
 
-        private void _view_backToRevision(object sender, EventArgs e)
+        private void View_backToRevision(object sender, EventArgs e)
         {
             if (_view.VersionDataG.SelectedItem == null)
             {
@@ -158,13 +158,13 @@ namespace CheckSumTerminal.Presenter
             }
         }
 
-        private void _view_showChanges(object sender, EventArgs e)
+        private void View_showChanges(object sender, EventArgs e)
         {
             IShowChangesWindow sw = new ShowChangesWindow(_model);
             sw.Show();
         }
 
-        private void _view_load(object sender, EventArgs e)
+        private void View_load(object sender, EventArgs e)
         {
             _view.VersionDataG.ItemsSource = _model.GetVersionModels();
         }

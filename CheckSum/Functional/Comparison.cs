@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace CheckSumServer.Functional
 {
-    public class comparison
+    public class Comparison
     {
         /// <summary>
         /// Сравнивает лист полученный из request с листом из базы, порядок элементов также должен совпадать.
@@ -16,46 +16,46 @@ namespace CheckSumServer.Functional
         /// <param name="fileTableModels">Лист полученный из request</param>
         /// <param name="configuration">Конфигурация приложения</param>
         /// <returns>id несовпавших элементов</returns>
-        public List<long> compare(List<FileTableModel> fileTableModels, IConfiguration configuration)
+        public List<long> Compare(List<FileTableModel> fileTableModels, IConfiguration configuration)
         {
-            DbGetTable db = new DbGetTable(configuration);
-            var fileTableModels2 = db.getTable(Properties.Resources.TableName);
-            return badCompare(fileTableModels, fileTableModels2);
+            DbGetTable db = new(configuration);
+            var fileTableModels2 = db.GetTable(Properties.Resources.TableName);
+            return BadCompare(fileTableModels, fileTableModels2);
         }
 
-        public List<long> deepListCompare(List<FileTableModel> fileTableModels, List<FileTableModel> fileTableModels2)
+        public List<long> DeepListCompare(List<FileTableModel> fileTableModels, List<FileTableModel> fileTableModels2)
         {
             var l = new List<long>();
 
             //Если запрос будет передан в случайном порядке
-            List<FileTableModel> table2 = fileTableModels2.OrderBy(x => x.id).ToList();
-            List<FileTableModel> table1 = fileTableModels.OrderBy(x => x.id).ToList();
+            List<FileTableModel> table2 = fileTableModels2.OrderBy(x => x.Id).ToList();
+            List<FileTableModel> table1 = fileTableModels.OrderBy(x => x.Id).ToList();
 
             //Начинаем с начала сортированного списка
-            for (int i = table2.IndexOf(table2.Where(x=>x.id== table1.First().id).First()); i < fileTableModels.Count; i++)
+            for (int i = table2.IndexOf(table2.Where(x=>x.Id== table1.First().Id).First()); i < fileTableModels.Count; i++)
             {
-                var k = table1[i].version;
-                if (table1[i].version != table2[i].version ||
-                    table1[i].name != table2[i].name ||
-                    table1[i].id != table2[i].id) 
-                    l.Add(table1[i].id);
+                var k = table1[i].Version;
+                if (table1[i].Version != table2[i].Version ||
+                    table1[i].Name != table2[i].Name ||
+                    table1[i].Id != table2[i].Id) 
+                    l.Add(table1[i].Id);
             }
             return l;
         }
 
-        public List<long> badCompare(List<FileTableModel> fileTableModels, List<FileTableModel> fileTableModels2)
+        public List<long> BadCompare(List<FileTableModel> fileTableModels, List<FileTableModel> fileTableModels2)
         {
             var l = new List<long>();
             foreach (var i in fileTableModels)
             {
-                var g = fileTableModels2.Where(x => x.name == i.name).FirstOrDefault();
+                var g = fileTableModels2.Where(x => x.Name == i.Name).FirstOrDefault();
                 if (g != null)
                 {
-                    if (g.version != i.version || g.id != i.id)
-                        l.Add(i.id);
+                    if (g.Version != i.Version || g.Id != i.Id)
+                        l.Add(i.Id);
                 }
                 else
-                    l.Add(i.id);
+                    l.Add(i.Id);
             }
 
             return l.Distinct().ToList();

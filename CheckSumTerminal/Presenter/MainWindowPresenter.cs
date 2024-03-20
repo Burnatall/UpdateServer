@@ -26,25 +26,25 @@ namespace CheckSumTerminal.Presenter
         {
             _view = view;
             _model = model;
-            _view.AddTableEvent += beginUpdate;
-            _view.UpdateEvent += update;
-            _view.ShowVersionEvent += _view_showVersionEvent;
-            _view.Load += _view_load;
+            _view.AddTableEvent += BeginUpdate;
+            _view.UpdateEvent += Update;
+            _view.ShowVersionEvent += View_showVersionEvent;
+            _view.Load += View_load;
         }
 
-        private void _view_load(object sender, EventArgs e)
+        private void View_load(object sender, EventArgs e)
         {
             _view.VersionTextBox.Text = _model.GetLastFullVersion();
         }
 
-        private void _view_showVersionEvent(object sender, EventArgs e)
+        private void View_showVersionEvent(object sender, EventArgs e)
         {
-            VersionSelectWindow versionSelectWindow = new VersionSelectWindow(_model);
+            VersionSelectWindow versionSelectWindow = new(_model);
             versionSelectWindow.Show();
-            _view_load(sender, e);
+            View_load(sender, e);
         }
 
-        private void beginUpdate(object sender, EventArgs e)
+        private void BeginUpdate(object sender, EventArgs e)
         {
             if (!_model.GetListFiles().Any())
             {
@@ -62,11 +62,11 @@ namespace CheckSumTerminal.Presenter
                 _view.Window.ShowDialog();
             }
         }
-        private void update(object sender, EventArgs e)
+        private void Update(object sender, EventArgs e)
         {
-            UpdateWindow w = new UpdateWindow();
+            UpdateWindow w = new();
             w.ShowDialog();
-            _view_load(sender, e);
+            View_load(sender, e);
         }
     }
 }

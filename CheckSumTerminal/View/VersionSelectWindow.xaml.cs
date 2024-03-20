@@ -21,12 +21,12 @@ namespace CheckSumTerminal.View
     /// </summary>
     public partial class VersionSelectWindow : Window, IVersionSelectWindow
     {
-        public event EventHandler backToRevision;
-        public event EventHandler showChanges;
-        public event EventHandler<RoutedEventArgs> load;
-        public event EventHandler<RunWorkerCompletedEventArgs> completed;
-        public event EventHandler<DoWorkEventArgs> doWork;
-        public event EventHandler<ProgressChangedEventArgs> progressChanged;
+        public event EventHandler BackToRevision;
+        public event EventHandler ShowChanges;
+        public event EventHandler<RoutedEventArgs> Load;
+        public event EventHandler<RunWorkerCompletedEventArgs> Completed;
+        public event EventHandler<DoWorkEventArgs> DoWork;
+        public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
         public DataGrid VersionDataG { get; set; }
         public Window Window { get; set; }
@@ -38,7 +38,7 @@ namespace CheckSumTerminal.View
         {
             InitializeComponent();
             Initalisers();
-            VersionSelectPresenter vp = new VersionSelectPresenter(this, model);
+            VersionSelectPresenter vp = new(this, model);
         }
 
         private void Initalisers()
@@ -64,20 +64,17 @@ namespace CheckSumTerminal.View
 
         private void BackToRevisionButton_Click(object sender, RoutedEventArgs e)
         {
-            var handler = backToRevision;
-            if (handler != null) handler(this, e);
+            BackToRevision?.Invoke(this, e);
         }
 
         private void ShowChangesButton_Click(object sender, RoutedEventArgs e)
         {
-            var handler = showChanges;
-            if (handler != null) handler(this, e);
+            ShowChanges?.Invoke(this, e);
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            var handler = load;
-            if (handler != null) handler(this, e);
+            Load?.Invoke(this, e);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -89,20 +86,17 @@ namespace CheckSumTerminal.View
         //todo: доделать backgroundWorker
         private void BackgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            var handler = completed;
-            if (handler != null) handler(this, e);
+            Completed?.Invoke(this, e);
         }
 
         private void BackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            var handler = doWork;
-            if (handler != null) handler(this, e);
+            DoWork?.Invoke(this, e);
         }
 
         private void BackgroundWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
-            var handler = progressChanged;
-            if (handler != null) handler(this, e);
+            ProgressChanged?.Invoke(this, e);
         }
     }
 }

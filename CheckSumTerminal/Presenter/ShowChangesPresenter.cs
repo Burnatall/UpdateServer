@@ -21,34 +21,34 @@ namespace CheckSumTerminal.Presenter
         {
             _view = view;
             _model = model;
-            _view.comboChange += _view_comboChange;
-            _view.load += _view_load;
-            _view.showChanges += _view_showChanges;
+            _view.ComboChange += View_comboChange;
+            _view.Load += View_load;
+            _view.ShowChanges += View_showChanges;
         }
 
-        private void _view_showChanges(object sender, EventArgs e)
+        private void View_showChanges(object sender, EventArgs e)
         {
-            var vrs = _view.versionComboBox.SelectedItem.ToString();
+            var vrs = _view.VersionComboBox.SelectedItem.ToString();
             if (_model.GetLastFullVersion() != vrs)
-                _view.ShowTextBox(File.ReadAllText(Properties.Resources.VersionFolderName + @"\" + _view.versionComboBox.SelectedItem.ToString() + @"\" + Properties.Resources.ChangesDocument));
+                _view.ShowTextBox(File.ReadAllText(Properties.Resources.VersionFolderName + @"\" + _view.VersionComboBox.SelectedItem.ToString() + @"\" + Properties.Resources.ChangesDocument));
             else
                 _view.ShowTextBox(File.ReadAllText(Properties.Resources.ChangesDocument));
         }
 
-        private void _view_comboChange(object sender, EventArgs e)
+        private void View_comboChange(object sender, EventArgs e)
         {
-            string vers = _view.versionComboBox.SelectedItem.ToString();
+            string vers = _view.VersionComboBox.SelectedItem.ToString();
             
             string versPrev = _model.GetChosenFullVersion( _model.GetPreviousVersionByNumber(vers));
             var prevList = _model.GetListFilesFromTable(Properties.Resources.VersionFolderName + @"\" + versPrev + @"\" + versPrev + ".csv");
             List<FileTableModel> curList;
-            if (_view.versionComboBox.SelectedIndex != _view.versionComboBox.Items.Count - 1)
+            if (_view.VersionComboBox.SelectedIndex != _view.VersionComboBox.Items.Count - 1)
                 curList = _model.GetListFilesFromTable(Properties.Resources.VersionFolderName + @"\" + vers + @"\" + vers + ".csv");
             else
                 curList = _model.GetListFilesFromTable(Environment.CurrentDirectory + @"\" + Properties.Resources.CSVTableName);
 
 
-            List<long> ids = new List<long>();
+            List<long> ids = new();
             //Создаем список измененных id
 
             //Если мы не дошли до самой первой версии
@@ -59,26 +59,26 @@ namespace CheckSumTerminal.Presenter
                 {
                     for (int i = 0; i < curList.Count; i++)
                     {
-                        if (i >= prevList.Count || curList[i].version != prevList[i].version|| !prevList.Select(x=>x.name).Contains( curList[i].name))
-                            ids.Add(curList[i].id);
+                        if (i >= prevList.Count || curList[i].Version != prevList[i].Version|| !prevList.Select(x=>x.Name).Contains( curList[i].Name))
+                            ids.Add(curList[i].Id);
                     }
                 }
                 else
                 {
                     for (int i = 0; i < prevList.Count; i++)
                     {
-                        if (i >= curList.Count || curList[i].version != prevList[i].version || !curList.Select(x => x.name).Contains(prevList[i].name))
-                            ids.Add(prevList[i].id);
+                        if (i >= curList.Count || curList[i].Version != prevList[i].Version || !curList.Select(x => x.Name).Contains(prevList[i].Name))
+                            ids.Add(prevList[i].Id);
                     }
                 }
-                _view.prev.ItemsSource = prevList.Where(x => ids.Contains(x.id));
-                _view.prevText.Text = versPrev;
+                _view.Prev.ItemsSource = prevList.Where(x => ids.Contains(x.Id));
+                _view.PrevText.Text = versPrev;
             }
             else if(curList!=null) //Если это первая версия и предшественника не существует
             {
-                ids = curList.Select(x => x.id).ToList();
-                _view.prev.ItemsSource = null;
-                _view.prevText.Text = "Отсутсвует";
+                ids = curList.Select(x => x.Id).ToList();
+                _view.Prev.ItemsSource = null;
+                _view.PrevText.Text = "Отсутсвует";
             }
             else
             {
@@ -87,15 +87,15 @@ namespace CheckSumTerminal.Presenter
                 return;
             }
 
-            _view.current.ItemsSource = curList.Where(x => ids.Contains(x.id));
-            _view.currentText.Text = vers;
+            _view.Current.ItemsSource = curList.Where(x => ids.Contains(x.Id));
+            _view.CurrentText.Text = vers;
         }
 
-        private void _view_load(object sender, EventArgs e)
+        private void View_load(object sender, EventArgs e)
         {
             var lst = _model.GetVersionModels().Select(x=>x.Версия);
-            _view.versionComboBox.ItemsSource = lst;
-            _view.versionComboBox.SelectedIndex = _view.versionComboBox.Items.Count - 1;
+            _view.VersionComboBox.ItemsSource = lst;
+            _view.VersionComboBox.SelectedIndex = _view.VersionComboBox.Items.Count - 1;
         }
     }
 }

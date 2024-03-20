@@ -8,18 +8,18 @@ namespace CheckSumServer.Functional
 {
     public static class Logger
     {
-        public async static void createLogWarning(string message)
+        public async static void CreateLogWarning(string message)
         {
             try
             {
-                await createLogInformation(message, "Warning:");
+                await CreateLogInformation(message, "Warning:");
             }
             catch { }
         }
 
-        public static Task createLogInformation(string message, string header) 
+        public static Task CreateLogInformation(string message, string header) 
         {
-            using (StreamWriter sw = new StreamWriter(new FileStream(Environment.CurrentDirectory + @"\" + Properties.Resources.LogConnectionFile, FileMode.Append)))
+            using (StreamWriter sw = new(new FileStream(Environment.CurrentDirectory + @"\" + Properties.Resources.LogConnectionFile, FileMode.Append)))
             {
                 sw.WriteLine("Warning:");
                 sw.WriteLine(message);
@@ -28,11 +28,11 @@ namespace CheckSumServer.Functional
             return Task.CompletedTask;
         }
 
-        public async static void createLogError(string message)
+        public async static void CreateLogError(string message)
         {
             try
             {
-                await createLogInformation(message, "Error:");
+                await CreateLogInformation(message, "Error:");
             }
             catch { }
         }

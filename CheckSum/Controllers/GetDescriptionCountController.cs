@@ -21,11 +21,11 @@ namespace CheckSumServer.Controllers
         [HttpGet]
         public Dictionary<string,DateTime> GetDesription()
         {
-            var d = Description.getRange();
+            var d = Description.GetRange();
 
             var ip = ControllerContext.HttpContext.Connection.RemoteIpAddress.ToString();
-            Logger.createLogWarning("Remote IP: " + ip + " Connected " + DateTime.Now.ToString() + Environment.NewLine 
-                + "Action: " + ToString() + Environment.NewLine+ "Answer: "+ Parser<string,DateTime>.getListForMessage(d)+Environment.NewLine);
+            Logger.CreateLogWarning("Remote IP: " + ip + " Connected " + DateTime.Now.ToString() + Environment.NewLine 
+                + "Action: " + ToString() + Environment.NewLine+ "Answer: "+ Parser<string,DateTime>.GetListForMessage(d)+Environment.NewLine);
 
             return d;
         }

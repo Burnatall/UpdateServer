@@ -28,7 +28,7 @@ namespace CheckSumServer.Controllers
                 var tst = Environment.CurrentDirectory +@"\"+Properties.Resources.PicturesZipName;
 
                 var ip = ControllerContext.HttpContext.Connection.RemoteIpAddress.ToString();
-                Logger.createLogWarning("Remote IP: " + ip + " Connected " + DateTime.Now.ToString() + Environment.NewLine
+                Logger.CreateLogWarning("Remote IP: " + ip + " Connected " + DateTime.Now.ToString() + Environment.NewLine
                     + "Action: " + ToString() + Environment.NewLine);
 
                 return PhysicalFile(tst, "archive/zip", Properties.Resources.PicturesZipName);

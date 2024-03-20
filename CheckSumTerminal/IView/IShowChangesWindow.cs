@@ -5,15 +5,15 @@ namespace CheckSumTerminal.IView
 {
     public interface IShowChangesWindow
     {
-        DataGrid current { get; set; }
-        TextBlock currentText { get; set; }
-        DataGrid prev { get; set; }
-        TextBlock prevText { get; set; }
-        ComboBox versionComboBox { get; set; }
+        DataGrid Current { get; set; }
+        TextBlock CurrentText { get; set; }
+        DataGrid Prev { get; set; }
+        TextBlock PrevText { get; set; }
+        ComboBox VersionComboBox { get; set; }
 
-        event EventHandler comboChange;
-        event EventHandler load;
-        event EventHandler showChanges;
+        event EventHandler ComboChange;
+        event EventHandler Load;
+        event EventHandler ShowChanges;
 
         void InitializeComponent();
 

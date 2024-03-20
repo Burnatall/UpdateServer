@@ -8,19 +8,19 @@ namespace CheckSumTerminal.IView
 {
     public interface IUpdateWindow
     {
-        string[] _files { get; set; }
+        string[] Files { get; set; }
         DataGrid CurrentGrid { get; set; }
         DataGrid NewFilesGrid { get; set; }
         TextBox TextBoxCurrent { get; set; }
         TextBox TextBoxNew { get; set; }
-        Dispatcher dispatcher { get; set; }
+        Dispatcher Dispatcher { get; set; }
 
-        event EventHandler loadData;
-        event EventHandler updateData;
-        event DragEventHandler dragNewData;
-        event EventHandler<OpenFileDialog> addopenFileDialogHandler;
-        event EventHandler deleteData;
-        event EventHandler deleteDataClear;
+        event EventHandler LoadData;
+        event EventHandler UpdateData;
+        event DragEventHandler DragNewData;
+        event EventHandler<OpenFileDialog> AddopenFileDialogHandler;
+        event EventHandler DeleteData;
+        event EventHandler DeleteDataClear;
 
         void InitializeComponent();
     }

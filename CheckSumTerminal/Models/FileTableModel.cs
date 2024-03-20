@@ -9,21 +9,23 @@ namespace CheckSumTerminal.Models
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Description("Id")]
-        public long id { get; set; }
+        public long Id { get; set; }
         [Description("Название файла")]
-        public string name { get; set; }
+        public string Name { get; set; }
         [Description("Версия")]
-        public int version { get; set; }
+        public int Version { get; set; }
         [Description("Дата изменения")]
-        public string date_time { get; set; }
+        public string DateTime { get; set; }
 
-        public FileTableModel clone()
+        public FileTableModel Clone()
         {
-            FileTableModel f = new FileTableModel();
-            f.id = id;
-            f.name = name;
-            f.version = version;
-            f.date_time = date_time;
+            FileTableModel f = new()
+            {
+                Id = Id,
+                Name = Name,
+                Version = Version,
+                DateTime = DateTime
+            };
 
             return f;
         }

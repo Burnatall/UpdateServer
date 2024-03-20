@@ -30,7 +30,7 @@ namespace CheckSumTerminal
     {
 
         public event EventHandler AddTableEvent;
-        public event EventHandler delTableEvent;
+        public event EventHandler DelTableEvent;
         public event EventHandler UpdateEvent;
         public event EventHandler ShowVersionEvent;
         public event EventHandler Load;
@@ -46,11 +46,11 @@ namespace CheckSumTerminal
         {
             InitializeComponent();
             //Initalisers();
-            bindings();
-            MainWindowPresenter p = new MainWindowPresenter(this, new MainModel());
+            Bindings();
+            MainWindowPresenter p = new(this, new MainModel());
         }
 
-        private void bindings()
+        private void Bindings()
         {
             DirectoryComboBox = DirectoryName;
             FileComboBox = VersionsFolderName;
@@ -73,32 +73,27 @@ namespace CheckSumTerminal
 
         private void ButtonAdd_Click(object sender, RoutedEventArgs e)
         {
-            var handler = AddTableEvent;
-            if (handler != null) handler(this, e);
+            AddTableEvent?.Invoke(this, e);
         }
 
         private void ButtonDel_Click(object sender, RoutedEventArgs e)
         {
-            var handler = delTableEvent;
-            if (handler != null) handler(this, e);
+            DelTableEvent?.Invoke(this, e);
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            var handler = Load;
-            if (handler != null) handler(this, e);
+            Load?.Invoke(this, e);
         }
 
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
-            var handler = UpdateEvent;
-            if (handler != null) handler(this, e);
+            UpdateEvent?.Invoke(this, e);
         }
 
         private void ButtonVersion_Click(object sender, RoutedEventArgs e)
         {
-            var handler = ShowVersionEvent;
-            if (handler != null) handler(this, e);
+            ShowVersionEvent?.Invoke(this, e);
         }
     }
 }

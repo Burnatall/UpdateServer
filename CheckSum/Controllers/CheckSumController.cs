@@ -37,12 +37,12 @@ namespace CheckSumServer.Controllers
             StreamReader s = new(cc.Request.Body);
             List<FileTableModel> files = JsonConvert.DeserializeObject<List<FileTableModel>>(s.ReadToEndAsync().Result);
 
-            comparison c = new();
-            var ans = c.compare(files, _configuration);
+            Comparison c = new();
+            var ans = c.Compare(files, _configuration);
 
             var ip = cc.Connection.RemoteIpAddress.ToString();
-            Logger.createLogWarning("Remote IP: " + ip + " Connected " + DateTime.Now.ToString() + Environment.NewLine 
-                +"Action: "+ ToString() + Environment.NewLine + "Answer: " + Parser<long,bool>.getListForMessage(ans)+ Environment.NewLine);
+            Logger.CreateLogWarning("Remote IP: " + ip + " Connected " + DateTime.Now.ToString() + Environment.NewLine 
+                +"Action: "+ ToString() + Environment.NewLine + "Answer: " + Parser<long,bool>.GetListForMessage(ans)+ Environment.NewLine);
 
             return ans;
         }

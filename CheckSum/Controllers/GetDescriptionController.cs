@@ -20,10 +20,10 @@ namespace CheckSumServer.Controllers
         [HttpGet]
         public string GetDesription(string number)
         {
-            var d = Description.getByNumber(number);
+            var d = Description.GetByNumber(number);
 
             var ip = ControllerContext.HttpContext.Connection.RemoteIpAddress.ToString();
-            Logger.createLogWarning("Remote IP: " + ip + " Connected " + DateTime.Now.ToString() + Environment.NewLine
+            Logger.CreateLogWarning("Remote IP: " + ip + " Connected " + DateTime.Now.ToString() + Environment.NewLine
                 + "Action: " + ToString() + Environment.NewLine + "Answer: " + d + Environment.NewLine);
 
             return d;

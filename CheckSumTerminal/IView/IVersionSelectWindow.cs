@@ -13,12 +13,12 @@ namespace CheckSumTerminal.IView
         BackgroundWorker BackgroundWorker { get; set; }
         ProgressBar ProgressBar { get; set; }
 
-        event EventHandler backToRevision;
-        event EventHandler<RoutedEventArgs> load;
-        event EventHandler showChanges;
-        event EventHandler<RunWorkerCompletedEventArgs> completed;
-        event EventHandler<DoWorkEventArgs> doWork;
-        event EventHandler<ProgressChangedEventArgs> progressChanged;
+        event EventHandler BackToRevision;
+        event EventHandler<RoutedEventArgs> Load;
+        event EventHandler ShowChanges;
+        event EventHandler<RunWorkerCompletedEventArgs> Completed;
+        event EventHandler<DoWorkEventArgs> DoWork;
+        event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
         void CreateDataGrid();
     }

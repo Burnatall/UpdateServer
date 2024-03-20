@@ -24,7 +24,7 @@ namespace CheckSumServer.Controllers
                 var tst = System.IO.Path.GetFullPath(Properties.Resources.CSVTableName);
 
                 var ip = ControllerContext.HttpContext.Connection.RemoteIpAddress.ToString();
-                Logger.createLogWarning("Remote IP: " + ip + " Connected " + DateTime.Now.ToString() + Environment.NewLine
+                Logger.CreateLogWarning("Remote IP: " + ip + " Connected " + DateTime.Now.ToString() + Environment.NewLine
                     + "Action: " + ToString() + Environment.NewLine);
 
                 return PhysicalFile(tst, "table/csv", Properties.Resources.CSVTableName);

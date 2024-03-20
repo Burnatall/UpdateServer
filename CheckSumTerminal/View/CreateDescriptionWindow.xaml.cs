@@ -48,7 +48,7 @@ namespace CheckSumTerminal.View
             FileNames = fileNames;
             FilesToUpdate = filsToUpdate;
             FilesToDelete = filesToDelete;
-            CreateDescriptionPresenter p = new CreateDescriptionPresenter(this, model);
+            CreateDescriptionPresenter p = new(this, model);
         }
 
         private void Bindings()
@@ -68,27 +68,23 @@ namespace CheckSumTerminal.View
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var handler = Start;
-            if (handler != null) handler(this, e);
+            Start?.Invoke(this, e);
         }
 
         private void BackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            var handler = DoWork;
-            if (handler != null) handler(this, e);
+            DoWork?.Invoke(this, e);
 
         }
 
         private void BackgroundWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
-            var handler = ProgressChanged;
-            if (handler != null) handler(this, e);
+            ProgressChanged?.Invoke(this, e);
         }
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            var handler = Complete;
-            if (handler != null) handler(this, e);
+            Complete?.Invoke(this, e);
         }
     }
 }
